@@ -1,69 +1,133 @@
 import Image from "next/image";
+import coinLogo from "../../public/assets/minegame-logo.png";
+import { MinerDemo } from "@/components/miner-demo";
+import { ProtocolStatus } from "@/components/protocol-status";
 import styles from "./page.module.css";
+
+const mechanics = [
+  ["01", "Lock in", "Deposit MINEGAME into the game vault. You can withdraw your principal, but a full exit resets your miner’s holding-age bonus."],
+  ["02", "Mine POWER", "Your stake, holding age, installed parts, and active overclock determine how quickly your rig produces nontransferable POWER."],
+  ["03", "Build the rig", "Spend POWER on virtual drills, cooling, carts, helmets, engines, lighting, and cosmetics that change appearance and performance."],
+  ["04", "Overclock", "Spend MINEGAME to double POWER production for 24 hours. Those tokens return to the rewards system instead of creating new supply."],
+];
+
+const launchSteps = [
+  "Game contracts built and locally tested",
+  "Independent security review",
+  "Final allocations and vesting approved",
+  "MINEGAME launched through o1 on Base",
+  "Website switched from preview to live game",
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  name: "MineGame",
+  url: "https://minegame.fun",
+  description: "A Base-native mining game where holding age, virtual equipment, and overclocking grow a player's miner.",
+  image: "https://minegame.fun/assets/minegame-logo.png",
+  gamePlatform: "Web",
+  applicationCategory: "BlockchainGame",
+};
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <header className={styles.header}>
+        <a className={styles.brand} href="#top" aria-label="MineGame home">
+          <Image src={coinLogo} alt="" width={44} height={44} priority />
+          <span>MINEGAME</span>
+        </a>
+        <nav className={styles.nav} aria-label="Primary navigation">
+          <a href="#how-it-works">How it works</a>
+          <a href="#mine">The mine</a>
+          <a href="#launch">Launch</a>
+        </nav>
+        <a className={styles.smallCta} href="#mine">Enter the mine</a>
+      </header>
+
+      <section className={styles.hero} id="top">
+        <div className={styles.heroCopy}>
+          <div className={styles.eyebrow}><span className={styles.statusDot} /> Base · o1 launch · pre-launch build</div>
+          <h1>Play the <span>MineGame.</span></h1>
+          <p className={styles.tagline}>Don’t lose your mind. Mine it.</p>
+          <p className={styles.lede}>
+            The longer your MINEGAME stays in the mine, the stronger your virtual miner becomes.
+            Earn POWER, install new parts, level up your rig, and light the fuse on a 24-hour overclock.
           </p>
+          <div className={styles.heroActions}>
+            <a className={styles.primaryCta} href="#mine">Preview your miner</a>
+            <a className={styles.textLink} href="#how-it-works">Read the rules <span aria-hidden>↘</span></a>
+          </div>
+          <p className={styles.disclaimer}>Preview only. MINEGAME is not deployed and no wallet transaction is available yet.</p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className={styles.coinStage} aria-label="MineGame coin logo">
+          <div className={styles.glow} />
+          <Image className={styles.coin} src={coinLogo} alt="Gold MineGame coin featuring a cartoon miner" priority sizes="(max-width: 800px) 82vw, 520px" />
+          <div className={`${styles.spark} ${styles.sparkOne}`} />
+          <div className={`${styles.spark} ${styles.sparkTwo}`} />
+          <div className={`${styles.spark} ${styles.sparkThree}`} />
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className={styles.statusStrip} aria-label="Protocol status"><ProtocolStatus /></section>
+
+      <section className={styles.section} id="how-it-works">
+        <div className={styles.sectionHeading}>
+          <p className={styles.kicker}>The core loop</p>
+          <h2>Time turns into horsepower.</h2>
+          <p>MineGame rewards commitment without printing an endless second token. POWER stays inside the game; MINEGAME remains the fixed-supply public asset.</p>
+        </div>
+        <div className={styles.mechanicsGrid}>
+          {mechanics.map(([number, title, body]) => (
+            <article className={styles.mechanicCard} key={number}>
+              <span>{number}</span><h3>{title}</h3><p>{body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.mineSection} id="mine">
+        <div className={styles.sectionHeading}>
+          <p className={styles.kicker}>Interactive design preview</p>
+          <h2>Your miner should look stronger because it is stronger.</h2>
+          <p>Try the local preview below. It demonstrates the progression model only; it does not connect a wallet or represent live balances.</p>
+        </div>
+        <MinerDemo />
+      </section>
+
+      <section className={styles.ageSection}>
+        <div><p className={styles.kicker}>Holding age</p><h2>The mine remembers.</h2></div>
+        <div className={styles.ageTrack}>
+          <div className={styles.ageLine} />
+          {[["Day 1", "1.00×", "Starter rig"], ["Day 30", "1.08×", "Copper streak"], ["Day 180", "1.49×", "Deep miner"], ["Day 365", "2.00×", "Master miner"]].map(([day, multiplier, label]) => (
+            <div className={styles.agePoint} key={day}><span /><strong>{multiplier}</strong><p>{day}</p><small>{label}</small></div>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.supplySection}>
+        <div className={styles.supplyNumber}><span>Fixed supply</span><strong>1,000,000,000</strong><p>MINEGAME · no inflation</p></div>
+        <div className={styles.supplyCopy}>
+          <h2>One public coin. One internal resource.</h2>
+          <p>MINEGAME is the transferable B20 launched through o1. POWER is nontransferable game progress. No hidden minting, no second market, and no claim that game rewards are a guaranteed financial return.</p>
+        </div>
+      </section>
+
+      <section className={styles.launchSection} id="launch">
+        <div className={styles.launchCard}>
+          <div><p className={styles.kicker}>Launch sequence</p><h2>Built first. Audited second. Launched last.</h2><p>The website is being prepared for Vercel at minegame.fun. The token launch remains a deliberate wallet-signing gate after the contracts and allocations pass review.</p></div>
+          <ol>{launchSteps.map((step, index) => <li key={step}><span>{String(index + 1).padStart(2, "0")}</span>{step}</li>)}</ol>
+        </div>
+      </section>
+
+      <footer className={styles.footer}>
+        <div className={styles.brand}><Image src={coinLogo} alt="" width={38} height={38} /><span>MINEGAME</span></div>
+        <p>Play the MineGame. Don’t let it go to your head.</p>
+        <p>© {new Date().getFullYear()} MineGame</p>
+      </footer>
+    </main>
   );
 }

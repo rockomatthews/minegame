@@ -1,0 +1,11 @@
+{
+  "name": "MineGame",
+  "symbol": "MINEGAME",
+  "description": "Play the MineGame. Don't lose your mind. Mine it. Lock MINEGAME to grow a virtual miner, produce nontransferable POWER, install stronger parts, and overclock the rig for 24 hours.",
+  "standard": "B20",
+  "launchpad": "o1 Launchpad",
+  "launchpadUrl": "https://launch.o1.exchange",
+  "image": "ipfs://REPLACE_WITH_FINAL_LOGO_CID",
+  "external_url": "https://minegame.fun",
+  "website": "https://minegame.fun"
+}

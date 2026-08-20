@@ -6,12 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "contracts:setup": "forge install --root contracts foundry-rs/forge-std --no-git",
+    "contracts:test": "forge test --root contracts -vv",
+    "contracts:fmt": "forge fmt --root contracts --check",
+    "monitor": "node scripts/check-live.mjs"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.6.1",
     "next": "16.3.1",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "viem": "^2.55.19"
   },
   "devDependencies": {
     "@types/node": "^20",
