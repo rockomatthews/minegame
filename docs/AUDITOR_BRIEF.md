@@ -35,6 +35,8 @@ The o1 launchpad, Base B20 implementation, token factory, Uniswap, Safe contract
 
 Run `npm run contracts:fmt` and `npm run contracts:test`. Freeze the repository to an exact commit before review. No deployment should precede written closure of all Critical and High findings.
 
+For the post-audit retest, also review `docs/AUDIT_REMEDIATION.md`, the adversarial unit tests, and `contracts/test/MineGameEngine.invariant.t.sol`. Confirm that the caller-supplied overclock price bound is checked before any token transfer and that a balance-short emergency exit cannot become a first-out race.
+
 ## Static-analysis tooling note
 
 Local Slither `0.11.6` exits `255` while resolving inheritance/reference IDs inside OpenZeppelin Contracts `5.6.1` (`Ownable2Step`, `SafeERC20`, `Pausable`, and `ReentrancyGuard`). Its partial output is not a clean result and should not be treated as contract findings or clearance. Please rerun Slither with a version that supports this OpenZeppelin AST, or use an equivalent compatible analyzer, and include the complete command and output in the audit evidence.

@@ -5,6 +5,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
@@ -23,7 +24,7 @@ contract MineGameEngine is Ownable2Step, Pausable, ReentrancyGuard {
     uint256 public constant OVERCLOCK_BONUS_BPS = 10_000;
     uint256 public constant MAX_PART_BONUS_BPS = 50_000;
     uint256 public constant MAX_EQUIPPED_PARTS = 8;
-    uint256 public constant MAX_OVERCLOCK_PRICE = 1_000_000 ether;
+    uint256 public constant MAX_OVERCLOCK_PRICE = 10_000 ether;
 
     IERC20 public immutable minegame;
     address public immutable rewardsVault;
@@ -58,7 +59,10 @@ contract MineGameEngine is Ownable2Step, Pausable, ReentrancyGuard {
 
     error ZeroAddress();
     error ZeroAmount();
+    error InvalidRewardsVault();
     error InvalidOverclockPrice();
+    error PriceExceedsMax(uint256 currentPrice, uint256 maxPrice);
+    error OwnershipRenunciationDisabled();
     error InvalidPart();
     error InvalidPartBoost();
     error InsufficientStake();
@@ -73,7 +77,7 @@ contract MineGameEngine is Ownable2Step, Pausable, ReentrancyGuard {
 
     event Staked(address indexed player, uint256 amount, uint256 newStake, uint256 weightedStart);
     event Withdrawn(address indexed player, uint256 amount, uint256 remainingStake);
-    event EmergencyWithdrawn(address indexed player, uint256 amount);
+    event EmergencyWithdrawn(address indexed player, uint256 accountedAmount, uint256 payoutAmount);
     event PowerAccrued(address indexed player, uint256 amount, uint256 balance, uint256 lifetimePower);
     event OverclockActivated(address indexed player, uint256 price, uint256 activeUntil);
     event OverclockPriceUpdated(uint256 oldPrice, uint256 newPrice);
@@ -88,6 +92,12 @@ contract MineGameEngine is Ownable2Step, Pausable, ReentrancyGuard {
     {
         if (initialOwner == address(0) || address(minegameToken) == address(0) || rewardDestination == address(0)) {
             revert ZeroAddress();
+        }
+        if (
+            rewardDestination == address(this) || rewardDestination == address(minegameToken)
+                || rewardDestination.code.length == 0
+        ) {
+            revert InvalidRewardsVault();
         }
         if (initialOverclockPrice == 0 || initialOverclockPrice > MAX_OVERCLOCK_PRICE) {
             revert InvalidOverclockPrice();
@@ -151,10 +161,16 @@ contract MineGameEngine is Ownable2Step, Pausable, ReentrancyGuard {
     }
 
     /// @notice Allows principal recovery during a pause without depending on game calculations.
+    /// @dev Pending POWER is intentionally forfeited. If the engine token balance has
+    /// unexpectedly shrunk, payout is pro rata so the remaining balance cannot be won
+    /// by the first account to exit.
     function emergencyWithdraw() external nonReentrant whenPaused {
         Position storage position = _positions[msg.sender];
         uint256 amount = position.staked;
         if (amount == 0) revert InsufficientStake();
+
+        uint256 balance = minegame.balanceOf(address(this));
+        uint256 payout = balance >= totalStaked ? amount : Math.mulDiv(amount, balance, totalStaked);
 
         position.staked = 0;
         position.weightedStart = 0;
@@ -162,8 +178,8 @@ contract MineGameEngine is Ownable2Step, Pausable, ReentrancyGuard {
         position.overclockUntil = 0;
         totalStaked -= amount;
 
-        minegame.safeTransfer(msg.sender, amount);
-        emit EmergencyWithdrawn(msg.sender, amount);
+        if (payout > 0) minegame.safeTransfer(msg.sender, payout);
+        emit EmergencyWithdrawn(msg.sender, amount, payout);
     }
 
     /// @notice Materializes pending, nontransferable POWER into the player's balance.
@@ -172,13 +188,15 @@ contract MineGameEngine is Ownable2Step, Pausable, ReentrancyGuard {
     }
 
     /// @notice Pays MINEGAME into the rewards vault to double POWER production for 24 hours.
-    function activateOverclock() external nonReentrant whenNotPaused {
+    function activateOverclock(uint256 maxPrice) external nonReentrant whenNotPaused {
         Position storage position = _positions[msg.sender];
         if (position.staked == 0) revert InsufficientStake();
         if (block.timestamp < position.overclockUntil) revert OverclockActive();
-        _accrue(msg.sender, position);
 
         uint256 price = overclockPrice;
+        if (price > maxPrice) revert PriceExceedsMax(price, maxPrice);
+        _accrue(msg.sender, position);
+
         uint256 balanceBefore = minegame.balanceOf(rewardsVault);
         minegame.safeTransferFrom(msg.sender, rewardsVault, price);
         if (minegame.balanceOf(rewardsVault) - balanceBefore != price) revert UnsupportedTransferBehavior();
@@ -265,6 +283,11 @@ contract MineGameEngine is Ownable2Step, Pausable, ReentrancyGuard {
         uint256 oldPrice = overclockPrice;
         overclockPrice = newPrice;
         emit OverclockPriceUpdated(oldPrice, newPrice);
+    }
+
+    /// @notice Ownership must remain recoverable so pause cannot permanently brick gameplay.
+    function renounceOwnership() public pure override {
+        revert OwnershipRenunciationDisabled();
     }
 
     function pause() external onlyOwner {
