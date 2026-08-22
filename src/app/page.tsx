@@ -1,6 +1,7 @@
 import Image from "next/image";
 import coinLogo from "../../public/assets/minegame-logo.png";
 import { MinerDemo } from "@/components/miner-demo";
+import { MinerDashboard } from "@/components/miner-showroom";
 import { ProtocolStatus } from "@/components/protocol-status";
 import styles from "./page.module.css";
 
@@ -48,28 +49,7 @@ export default function Home() {
       </header>
 
       <section className={styles.hero} id="top">
-        <div className={styles.heroCopy}>
-          <div className={styles.eyebrow}><span className={styles.statusDot} /> Base · o1 launch · pre-launch build</div>
-          <h1>Play the <span>MineGame.</span></h1>
-          <p className={styles.tagline}>Don’t lose your mind. Mine it.</p>
-          <p className={styles.lede}>
-            The longer your MINEGAME stays in the mine, the stronger your virtual miner becomes.
-            Earn POWER, install new parts, level up your rig, and light the fuse on a 24-hour overclock.
-          </p>
-          <div className={styles.heroActions}>
-            <a className={styles.primaryCta} href="#mine">Preview your miner</a>
-            <a className={styles.textLink} href="#how-it-works">Read the rules <span aria-hidden>↘</span></a>
-          </div>
-          <p className={styles.disclaimer}>Preview only. MINEGAME is not deployed and no wallet transaction is available yet.</p>
-        </div>
-
-        <div className={styles.coinStage} aria-label="MineGame coin logo">
-          <div className={styles.glow} />
-          <Image className={styles.coin} src={coinLogo} alt="Gold MineGame coin featuring a cartoon miner" priority sizes="(max-width: 800px) 82vw, 520px" />
-          <div className={`${styles.spark} ${styles.sparkOne}`} />
-          <div className={`${styles.spark} ${styles.sparkTwo}`} />
-          <div className={`${styles.spark} ${styles.sparkThree}`} />
-        </div>
+        <MinerDashboard />
       </section>
 
       <section className={styles.statusStrip} aria-label="Protocol status"><ProtocolStatus /></section>
