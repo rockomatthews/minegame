@@ -1,45 +1,57 @@
 # MineGame architecture
 
-The canonical MINEGAME token launches on Base through o1 Launchpad as a fixed-supply B20. The o1 token is not modified or replaced. `MineGameEngine` accepts that ERC-20-compatible B20 and provides the game around it.
+The canonical MINEGAME token launches on Base through o1 as a fixed-supply B20. The token is not replaced, wrapped, minted, or modified by the game. `MineGameEconomy` is the new gameplay contract; `MineGameEngine` is retained only as the previously audited POWER prototype and is not the proposed launch architecture.
 
-## Assets
+## One-currency rule
 
-- **MINEGAME:** transferable public B20; exactly 1,000,000,000 tokens; no inflation or game-controlled minting.
-- **POWER:** internal `uint256` balance; not ERC-20, transferable, tradable, or withdrawable; earned from staked MINEGAME and spent on virtual parts.
+- **MINEGAME is the only economic asset.** Miners, rooms, marketplace purchases, protocol sellbacks, and reward claims settle in MINEGAME.
+- **Hashrate, grid draw, condition, and repair state are metrics.** They are not tokens, transferable balances, or redeemable assets.
+- The contract cannot mint MINEGAME. Rewards stop when the disclosed reward reserve is exhausted.
 
-## Game loop
+## Core loop
 
-1. A player approves and stakes MINEGAME.
-2. One staked MINEGAME produces one base POWER per day before bonuses.
-3. Holding age increases linearly from `1.00x` to `2.00x` over 365 days, then caps.
-4. Adding stake uses an amount-weighted start time, preventing age laundering.
-5. Immutable virtual parts are purchased with POWER and equipped for additive boosts.
-6. A 24-hour overclock adds `1.00x`; its MINEGAME price goes to the immutable rewards vault. The wallet signs a caller-supplied maximum price so an owner update cannot overcharge a pending transaction.
-7. Full withdrawal resets holding age but preserves earned POWER and owned parts.
+1. Every wallet has one free room with five miner slots, but receives no free miner.
+2. A player buys any configured miner tier with MINEGAME using a wallet-signed maximum price.
+3. Active miners share the funded reward stream in proportion to active hashrate.
+4. A listed miner stops earning until the listing is cancelled or purchased.
+5. A buyer can purchase a listed miner with a wallet-signed maximum price. Five percent returns to the reward reserve and the remainder goes to the seller.
+6. After a seven-day ownership cooldown, a miner can be sold to the protocol at its configured basis percentage if the separate buyback reserve has enough MINEGAME.
+7. Additional five-slot rooms are purchased with MINEGAME using a wallet-signed maximum price.
 
-## Safety properties
+## Reserve accounting
 
-- Players can withdraw normally while paused; `emergencyWithdraw()` provides a minimal principal-only exit that forfeits pending POWER.
-- If the token balance ever shrinks unexpectedly, emergency payouts are pro rata instead of first-come, first-served.
-- The owner cannot withdraw or seize player stake.
-- Fee-on-transfer and balance-discrepant transfers are rejected.
-- Parts are immutable after publication; only future purchases can be stopped or resumed.
-- Overclock price is bounded at 10,000 MINEGAME, and every activation includes the player's maximum accepted price.
-- Owner transfer uses OpenZeppelin `Ownable2Step`; ownership cannot be renounced, and the deployment script requires a contract-wallet owner.
-- The rewards vault is an immutable deployed contract wallet and cannot be the engine or token contract.
+Primary miner payments are allocated 35% to rewards, 55% to buybacks, and 10% to the treasury. Room payments are allocated 80% to rewards and 20% to the treasury. Marketplace fees are 5% and return entirely to rewards.
+
+The contract tracks three obligations independently:
+
+- `rewardReserve`: unearned MINEGAME available for future emissions.
+- `rewardLiability`: MINEGAME already earned but not claimed.
+- `buybackReserve`: MINEGAME reserved for protocol sellbacks.
+
+`accountedTokenBalance()` is their sum. `isSolvent()` requires the contract's actual MINEGAME balance to cover that sum. Emission is capped by both the owner-configured rate ceiling and available `rewardReserve`.
+
+## Buyback basis
+
+Protocol sellback uses a miner-specific basis, not the current admin price. A secondary-market premium cannot increase that basis. A discounted secondary sale reduces the basis to the lower purchase price. This prevents a buyer from acquiring a cheap transferable protocol put backed by the original higher primary-sale price.
+
+Protocol sellback is not a guaranteed profit or guaranteed liquidity. It is subject to a seven-day ownership cooldown, the tier's immutable buyback percentage, a caller-supplied minimum payout, and available buyback reserves.
+
+## Safety posture
+
+- Deployment starts paused. The owner Safe must separately configure tiers, verify reserves, and explicitly unpause.
+- Purchases and new listings stop while paused; claims, listing cancellation, and protocol sellback remain available.
+- Incoming and outgoing token transfers require exact balance deltas, rejecting fee-on-transfer behavior.
+- State-changing token paths use `nonReentrant`.
+- Tier hashrate, grid draw, buyback percentage, and metadata URI are immutable after publication. Only tier price and primary-sale availability can change.
+- Every admin-controlled purchase price is bounded in the contract, and every purchase/sellback carries a caller-signed price or payout bound.
+- Ownership uses `Ownable2Step`; renunciation is disabled; deployment requires contract-wallet owner and treasury addresses.
 
 ## Administrative powers
 
-The owner can pause/unpause game actions, publish new immutable parts, disable future purchases of a part, and change the bounded overclock price. The owner cannot alter POWER, rewrite existing parts, move player stake, or mint MINEGAME.
+The owner Safe can configure new immutable tiers, change existing primary prices within the hard cap, enable or disable primary tier sales, change room price within its hard cap, change reward rate within its immutable ceiling, and pause/unpause. It cannot mint MINEGAME, seize miners, rewrite existing tier performance/buyback data, move reserve accounting to the treasury, change marketplace fee shares, or bypass player price bounds.
 
-Pausing blocks gameplay calls but intentionally does not stop POWER time. Positions accrue for the paused interval once gameplay resumes. This avoids changing holding economics for all users during operational maintenance.
+## Deliberate exclusions
 
-## Integration requirements
+The reviewed economy contract does not yet implement repair timers, machine wear, parts, loadout appearance, overclocking, or an ownership-age reward multiplier. Those remain interface/design previews and require a separately specified and audited module before becoming wallet-enabled. The historical POWER staking engine is not required for the MINEGAME-only launch path.
 
-The engine is designed only for the canonical fixed-supply o1 B20. Before engine deployment, record the live token address, runtime bytecode hash, factory/implementation, and verified ABI evidence showing there is no burn, negative rebase, blacklist, seizure, pause, or upgrade path. The deployment script separately asserts the `MineGame` name, `MINEGAME` symbol, 18 decimals, and exactly 1,000,000,000-token supply.
-
-The interface must warn that a full withdrawal cancels any remaining paid overclock without refund and that `emergencyWithdraw()` forfeits unmaterialized POWER. Normal `withdraw()` is the default exit, including while paused.
-
-## Deliberate exclusion
-
-The first engine does not promise or emit financial yield in MINEGAME. “Yield rate” means POWER production. Any later finite MINEGAME season or leaderboard reward module must be separately specified, funded from a disclosed allocation, and audited.
+Before deployment, independently verify the live o1 B20 bytecode and ABI has no holder burn, negative rebase, blacklist, seizure, pause, or upgrade path. Record the token address, runtime bytecode hash, factory/implementation path, and exact total supply.

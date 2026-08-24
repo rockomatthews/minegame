@@ -7,6 +7,10 @@ interface IStakeTarget {
     function stake(uint256 amount) external;
 }
 
+interface IMinerPurchaseTarget {
+    function buyMiner(uint256 tierId, uint256 maxPrice) external returns (uint256 minerId);
+}
+
 contract MockMineGame is ERC20 {
     constructor() ERC20("MineGame", "MINEGAME") {
         _mint(msg.sender, 1_000_000_000 ether);
@@ -55,6 +59,29 @@ contract ReentrantMineGame is ERC20 {
         if (msg.sender == target && !callbackAttempted) {
             callbackAttempted = true;
             (bool succeeded,) = target.call(abi.encodeCall(IStakeTarget.stake, (1)));
+            callbackBlocked = !succeeded;
+        }
+        return super.transferFrom(from, to, value);
+    }
+}
+
+contract ReentrantEconomyMineGame is ERC20 {
+    address public target;
+    bool public callbackAttempted;
+    bool public callbackBlocked;
+
+    constructor() ERC20("MineGame", "MINEGAME") {
+        _mint(msg.sender, 1_000_000_000 ether);
+    }
+
+    function setTarget(address newTarget) external {
+        target = newTarget;
+    }
+
+    function transferFrom(address from, address to, uint256 value) public override returns (bool) {
+        if (msg.sender == target && !callbackAttempted) {
+            callbackAttempted = true;
+            (bool succeeded,) = target.call(abi.encodeCall(IMinerPurchaseTarget.buyMiner, (1, value)));
             callbackBlocked = !succeeded;
         }
         return super.transferFrom(from, to, value);

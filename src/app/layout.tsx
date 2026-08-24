@@ -3,7 +3,7 @@ import "./globals.css";
 
 const siteUrl = "https://minegame.fun";
 const description =
-  "Stake MINEGAME, grow a virtual miner, earn nontransferable POWER, install stronger parts, and overclock your rig for a day.";
+  "Buy virtual miners with MINEGAME, improve their hashrate, and compete for finite, funded MINEGAME rewards on Base.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

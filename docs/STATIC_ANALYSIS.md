@@ -8,13 +8,13 @@ Command:
 slither contracts --compile-force-framework foundry
 ```
 
-Result: **not a valid analysis result**. Slither fails to resolve inheritance/reference IDs in OpenZeppelin Contracts 5.6.1, including `Ownable2Step`, `SafeERC20`, `Pausable`, `ReentrancyGuard`, and `Math`. Any detector output after those parser errors is partial and must not be treated as a finding or clearance.
+Result: **not a valid analysis result**. Slither fails to resolve inheritance/reference IDs in OpenZeppelin Contracts 5.6.1, including `Ownable2Step`, `SafeERC20`, `Pausable`, `ReentrancyGuard`, and `Math`. The same failure was reproduced against `MineGameEconomy.sol`. Any detector output after those parser errors is partial and must not be treated as a finding or clearance.
 
 Representative error:
 
 ```text
 Failed to resolved name for reference id ... Ownable2Step.sol
-ContractSolcParsing: Missing inheritance MineGameEngine
+ContractSolcParsing: Missing inheritance MineGameEconomy
 ```
 
 The installed `0.11.6` release was the latest published Slither version when this remediation was prepared.
@@ -25,6 +25,7 @@ Equivalent-analyzer fallback commands:
 
 ```bash
 npx --yes @cyfrin/aderyn@0.6.8 . --src src --path-includes src/MineGameEngine.sol --output /tmp/minegame-aderyn.md
+npx --yes @cyfrin/aderyn@0.6.8 . --src src --path-includes src/MineGameEconomy.sol --output /tmp/minegame-economy-aderyn.md
 npx --yes @cyfrin/aderyn@0.6.8 . --src src --output /tmp/minegame-aderyn.md
 ```
 

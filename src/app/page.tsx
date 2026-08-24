@@ -6,10 +6,10 @@ import { ProtocolStatus } from "@/components/protocol-status";
 import styles from "./page.module.css";
 
 const mechanics = [
-  ["01", "Lock in", "Deposit MINEGAME into the game vault. You can withdraw your principal, but a full exit resets your miner’s holding-age bonus."],
-  ["02", "Mine POWER", "Your stake, holding age, installed parts, and active overclock determine how quickly your rig produces nontransferable POWER."],
-  ["03", "Build the rig", "Spend POWER on virtual drills, cooling, carts, helmets, engines, lighting, and cosmetics that change appearance and performance."],
-  ["04", "Overclock", "Spend MINEGAME to double POWER production for 24 hours. Those tokens return to the rewards system instead of creating new supply."],
+  ["01", "Buy a miner", "Every miner, including Tin Pan, costs MINEGAME. Your first room is free and holds five miners; extra rooms cost MINEGAME."],
+  ["02", "Mine MINEGAME", "Active miners share a finite, funded MINEGAME reward reserve according to their effective hashrate. No new coin is minted."],
+  ["03", "Build the rig", "Virtual parts, repairs, and upgrades improve visible performance metrics. They never create a second currency."],
+  ["04", "Choose your exit", "List a miner for another player or use the reserve-backed protocol sellback after its cooldown. Payouts are bounded, not guaranteed profit."],
 ];
 
 const launchSteps = [
@@ -25,7 +25,7 @@ const jsonLd = {
   "@type": "VideoGame",
   name: "MineGame",
   url: "https://minegame.fun",
-  description: "A Base-native mining game where holding age, virtual equipment, and overclocking grow a player's miner.",
+  description: "A Base-native virtual miner economy where paid rigs compete for finite, funded MINEGAME rewards.",
   image: "https://minegame.fun/assets/minegame-logo.png",
   gamePlatform: "Web",
   applicationCategory: "BlockchainGame",
@@ -37,7 +37,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className={styles.header}>
         <a className={styles.brand} href="#top" aria-label="MineGame home">
-          <Image src={coinLogo} alt="" width={44} height={44} priority />
+          <Image src={coinLogo} alt="" width={44} height={44} preload />
           <span>MINEGAME</span>
         </a>
         <nav className={styles.nav} aria-label="Primary navigation">
@@ -57,8 +57,8 @@ export default function Home() {
       <section className={styles.section} id="how-it-works">
         <div className={styles.sectionHeading}>
           <p className={styles.kicker}>The core loop</p>
-          <h2>Time turns into horsepower.</h2>
-          <p>MineGame rewards commitment without printing an endless second token. POWER stays inside the game; MINEGAME remains the fixed-supply public asset.</p>
+          <h2>Build the mine. Earn the coin.</h2>
+          <p>MINEGAME is the only currency. Miners, rooms, parts, rewards, marketplace sales, and protocol sellbacks all settle in the same fixed-supply coin.</p>
         </div>
         <div className={styles.mechanicsGrid}>
           {mechanics.map(([number, title, body]) => (
@@ -79,10 +79,10 @@ export default function Home() {
       </section>
 
       <section className={styles.ageSection}>
-        <div><p className={styles.kicker}>Holding age</p><h2>The mine remembers.</h2></div>
+        <div><p className={styles.kicker}>Miner progression</p><h2>The mine remembers.</h2></div>
         <div className={styles.ageTrack}>
           <div className={styles.ageLine} />
-          {[["Day 1", "1.00×", "Starter rig"], ["Day 30", "1.08×", "Copper streak"], ["Day 180", "1.49×", "Deep miner"], ["Day 365", "2.00×", "Master miner"]].map(([day, multiplier, label]) => (
+          {[["Tier 1", "1.00×", "Tin Pan"], ["Tier 4", "2.50×", "Boiler Badger"], ["Tier 7", "7.00×", "Arc Canary"], ["Tier 10", "24.00×", "King Midas"]].map(([day, multiplier, label]) => (
             <div className={styles.agePoint} key={day}><span /><strong>{multiplier}</strong><p>{day}</p><small>{label}</small></div>
           ))}
         </div>
@@ -91,8 +91,8 @@ export default function Home() {
       <section className={styles.supplySection}>
         <div className={styles.supplyNumber}><span>Fixed supply</span><strong>1,000,000,000</strong><p>MINEGAME · no inflation</p></div>
         <div className={styles.supplyCopy}>
-          <h2>One public coin. One internal resource.</h2>
-          <p>MINEGAME is the transferable B20 launched through o1. POWER is nontransferable game progress. No hidden minting, no second market, and no claim that game rewards are a guaranteed financial return.</p>
+          <h2>One public coin. No shadow currency.</h2>
+          <p>MINEGAME is the transferable B20 launched through o1 and the only economic asset in the game. Hashrate, grid draw, and machine condition are gameplay metrics—not tokens. Rewards come from disclosed reserves and are never guaranteed.</p>
         </div>
       </section>
 

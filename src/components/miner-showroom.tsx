@@ -27,7 +27,7 @@ type Miner = {
 const tokenFormat = new Intl.NumberFormat("en-US");
 
 const miners: Miner[] = [
-  { tier: 1, name: "Tin Pan", image: tinPan, price: 0, hashRate: 1, gridDraw: 0.6, condition: 92 },
+  { tier: 1, name: "Tin Pan", image: tinPan, price: 1_000, hashRate: 1, gridDraw: 0.6, condition: 92 },
   { tier: 2, name: "Rattletrap", image: rattletrap, price: 2_500, hashRate: 1.35, gridDraw: 0.9, condition: 74 },
   { tier: 3, name: "Molebox", image: molebox, price: 7_500, hashRate: 1.8, gridDraw: 1.4, condition: 100 },
   { tier: 4, name: "Boiler Badger", image: boilerBadger, price: 20_000, hashRate: 2.5, gridDraw: 2.2, condition: 100 },
@@ -39,26 +39,28 @@ const miners: Miner[] = [
   { tier: 10, name: "King Midas", image: kingMidas, price: 2_500_000, hashRate: 24, gridDraw: 30, condition: 100 },
 ];
 
-const installedMiners = miners.slice(0, 2);
+const installedMiners: Miner[] = [];
 const roomCapacity = 5;
 const roomPrice = 100_000;
-const powerBalance = 12_480;
-const projectedDailyPower = 2_350;
+const claimableMinegame = 0;
+const projectedDailyMinegame = 0;
 
 function formatPrice(price: number) {
-  return price === 0 ? "FREE STARTER" : `${tokenFormat.format(price)} MINEGAME`;
+  return `${tokenFormat.format(price)} MINEGAME`;
 }
 
 export function MinerDashboard() {
   const [repaired, setRepaired] = useState(false);
   const [marketOpen, setMarketOpen] = useState(false);
-  const [notice, setNotice] = useState("Preview mode · no wallet transaction is active");
+  const [notice, setNotice] = useState("Connect a wallet to load owned miners · preview mode only");
 
   const totalHashRate = installedMiners.reduce((total, miner) => total + miner.hashRate, 0);
   const totalGridDraw = installedMiners.reduce((total, miner) => total + miner.gridDraw, 0);
-  const averageCondition = repaired
-    ? 100
-    : Math.round(installedMiners.reduce((total, miner) => total + miner.condition, 0) / installedMiners.length);
+  const averageCondition = installedMiners.length === 0
+    ? null
+    : repaired
+      ? 100
+      : Math.round(installedMiners.reduce((total, miner) => total + miner.condition, 0) / installedMiners.length);
 
   function repairRoom() {
     if (repaired) return;
@@ -92,17 +94,17 @@ export function MinerDashboard() {
           </button>
         </div>
         <div className={styles.powerBalance}>
-          <span>POWER balance</span>
-          <strong>{tokenFormat.format(powerBalance)}</strong>
+          <span>Claimable MINEGAME</span>
+          <strong>{tokenFormat.format(claimableMinegame)}</strong>
         </div>
       </header>
 
       <div className={styles.stats} aria-label="Current room performance">
         <div><span>Total hashrate</span><strong>{totalHashRate.toFixed(2)}x</strong><small>combined output</small></div>
         <div><span>Grid consumption</span><strong>{totalGridDraw.toFixed(1)} / 5.0 kW</strong><small>{Math.round((totalGridDraw / 5) * 100)}% room load</small></div>
-        <div><span>Projected yield</span><strong>{tokenFormat.format(projectedDailyPower)}</strong><small>POWER per day</small></div>
-        <div><span>Machine health</span><strong>{averageCondition}%</strong><small>{repaired ? "maintenance complete" : "repair available"}</small></div>
-        <div><span>Capacity</span><strong>{installedMiners.length} / {roomCapacity}</strong><small>three open slots</small></div>
+        <div><span>Estimated rewards</span><strong>{tokenFormat.format(projectedDailyMinegame)}</strong><small>MINEGAME per day · variable</small></div>
+        <div><span>Machine health</span><strong>{averageCondition === null ? "—" : `${averageCondition}%`}</strong><small>{averageCondition === null ? "no miners installed" : repaired ? "maintenance complete" : "repair available"}</small></div>
+        <div><span>Capacity</span><strong>{installedMiners.length} / {roomCapacity}</strong><small>{roomCapacity} open slots</small></div>
       </div>
 
       <div className={styles.roomView}>
@@ -152,11 +154,11 @@ export function MinerDashboard() {
 
       <footer className={styles.actionBar}>
         <div className={styles.yieldReadout}>
-          <span>Today&apos;s projected room output</span>
-          <strong>+{tokenFormat.format(projectedDailyPower)} POWER</strong>
+          <span>Today&apos;s estimated room rewards</span>
+          <strong>+{tokenFormat.format(projectedDailyMinegame)} MINEGAME</strong>
         </div>
-        <button className={styles.repairButton} type="button" onClick={repairRoom} disabled={repaired}>
-          {repaired ? "Maintenance complete · returns tomorrow" : "Run daily repair"}
+        <button className={styles.repairButton} type="button" onClick={repairRoom} disabled={repaired || installedMiners.length === 0}>
+          {installedMiners.length === 0 ? "No miners to repair" : repaired ? "Maintenance complete · returns tomorrow" : "Run daily repair"}
         </button>
         <button className={styles.marketButton} type="button" onClick={() => setMarketOpen(true)}>Buy a miner</button>
         <p className={styles.notice} aria-live="polite">{notice}</p>
@@ -172,7 +174,7 @@ export function MinerDashboard() {
                 <article key={miner.tier}>
                   <Image src={miner.image} alt="" sizes="120px" loading="eager" />
                   <div><span>Tier {miner.tier}</span><h3>{miner.name}</h3><strong>{formatPrice(miner.price)}</strong></div>
-                  <button type="button" onClick={() => previewMinerPurchase(miner)}>{miner.price === 0 ? "Included" : "Buy"}</button>
+                  <button type="button" onClick={() => previewMinerPurchase(miner)}>Buy</button>
                 </article>
               ))}
             </div>

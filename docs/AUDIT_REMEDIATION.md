@@ -1,4 +1,6 @@
-# MineGame security-audit remediation
+# MineGame security-audit remediation (historical POWER engine)
+
+> This remediation record applies to the legacy `MineGameEngine.sol`. It does not audit or clear `MineGameEconomy.sol`.
 
 This document maps the 20 August 2026 independent audit of commit `e89c87e4c9d3b6f69562ed327d76dae65b7d9795` to the remediation candidate. The exact candidate commit is supplied with the retest request.
 

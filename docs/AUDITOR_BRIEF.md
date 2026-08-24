@@ -1,4 +1,6 @@
-# MineGame focused audit brief
+# MineGame focused audit brief (historical POWER engine)
+
+> This brief covers the legacy `MineGameEngine.sol` POWER staking prototype. The proposed MINEGAME-only miner economy is scoped in `ECONOMY_AUDITOR_BRIEF.md`.
 
 Review whether the game layer safely accepts the separately launched fixed-supply o1/B20 and whether anyone can steal stake, manufacture POWER, preserve unearned age, obtain parts without payment, extend overclock without payment, or block exits.
 
