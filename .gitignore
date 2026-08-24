@@ -39,6 +39,7 @@ yarn-error.log*
 /contracts/out/
 /contracts/broadcast/
 /contracts/lib/
+/cache/
 
 # vercel
 .vercel

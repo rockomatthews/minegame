@@ -73,13 +73,13 @@ npm run lint
 npm run build
 ```
 
-The economy suite includes unit, 10,000-run fuzz, and stateful invariant campaigns. Please add independent PoCs rather than relying only on project tests.
+The economy suite includes unit, 10,000-run fuzz, and stateful invariant campaigns. `fail_on_revert` is enabled, so any unexpected handler revert fails the campaign. Please add independent PoCs rather than relying only on project tests.
 
-Local pre-freeze verification: 49 Foundry tests passed, 0 failed, including 26 focused economy unit/fuzz tests and three economy invariant campaigns at 512 runs × 100 calls. `MineGameEconomy` runtime bytecode was 15,874 bytes, leaving 8,702 bytes below the EIP-170 limit. `forge fmt --check`, ESLint, and the Next.js production build also passed. The auditor must reproduce these results from the frozen commit.
+Latest remediation verification: 55 Foundry tests passed, 0 failed, including 31 focused economy unit/fuzz tests and four economy invariant campaigns at 512 runs × 100 calls with zero handler reverts. `MineGameEconomy` runtime bytecode is 15,847 bytes, leaving 8,729 bytes below the EIP-170 limit. `npm ci`, `forge fmt --check`, ESLint, the Next.js production build, and the documented Slither command pass. The auditor must reproduce these results from the frozen remediation commit.
 
-## Known tool limitation
+## Static analysis
 
-Slither 0.11.6 does not currently yield a valid result with this repository's OpenZeppelin 5.6.1 AST. It reports unresolved reference IDs and missing inheritance, then emits partial dependency findings. Those outputs are neither clearance nor valid findings for `MineGameEconomy`. Aderyn 0.6.8 previously failed during AST ingestion. The static-analysis gate remains open; see `docs/STATIC_ANALYSIS.md`.
+Slither 0.11.6 analyzes the economy successfully when driven through the exact Solidity 0.8.26 binary instead of Foundry's compiler framework. The remediation run analyzed 14 contracts with 100 enabled detectors and returned zero findings after excluding three reviewed strict-equality false positives. See `docs/STATIC_ANALYSIS.md` for the exact command and evidence boundary.
 
 ## Deployment and launch gates
 
@@ -87,7 +87,7 @@ No deployment, tier configuration, reserve funding, approval, unpause, or token 
 
 1. Freeze and independently review the exact commit.
 2. Close all Critical and High findings in writing and retest remediations.
-3. Verify the live o1 B20 address, bytecode, ABI, factory/implementation, supply, and absence of burn/rebase/blacklist/seizure/pause/upgrade behavior.
+3. Verify the live o1 B20 address, creation block, bytecode, ABI, factory/implementation, supply, and absence of burn/rebase/blacklist/seizure/pause/upgrade behavior. Run `npm run check:b20`, require `pass: true`, and preserve its report and digest.
 4. Simulate the exact deployment against a current Base Mainnet fork/precompile environment.
 5. Independently approve primary prices, reward rate/ceiling, grid capacity, buyback percentages, tier metadata CIDs, initial reward funding, and initial buyback funding.
 6. Deploy paused and verify source code.

@@ -5,10 +5,22 @@ import {Script, console2} from "forge-std/Script.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {MineGameEconomy} from "../src/MineGameEconomy.sol";
 
+interface IBaseB20Preflight {
+    function supplyCap() external view returns (uint256);
+    function pausedFeatures() external view returns (uint8[] memory);
+    function policyId(bytes32 policyScope) external view returns (uint64);
+}
+
 /// @notice Deploys the paused MINEGAME miner economy after the canonical o1 B20 exists.
 /// @dev This script does not configure tiers, fund reserves, unpause, or launch the token.
 contract DeployMineGameEconomy is Script {
     uint256 internal constant EXPECTED_SUPPLY = 1_000_000_000 ether;
+    bytes32 internal constant TRANSFER_SENDER_POLICY = keccak256("TRANSFER_SENDER_POLICY");
+    bytes32 internal constant TRANSFER_RECEIVER_POLICY = keccak256("TRANSFER_RECEIVER_POLICY");
+    bytes32 internal constant TRANSFER_EXECUTOR_POLICY = keccak256("TRANSFER_EXECUTOR_POLICY");
+    bytes32 internal constant MINT_RECEIVER_POLICY = keccak256("MINT_RECEIVER_POLICY");
+    bytes32 internal constant SEIZE_HOLDER_POLICY = keccak256("SEIZE_HOLDER_POLICY");
+    bytes32 internal constant SEIZE_RECEIVER_POLICY = keccak256("SEIZE_RECEIVER_POLICY");
 
     function run() external returns (MineGameEconomy economy) {
         address token = vm.envAddress("MINEGAME_TOKEN_ADDRESS");
@@ -18,6 +30,7 @@ contract DeployMineGameEconomy is Script {
         uint256 rewardRate = vm.envUint("MINEGAME_REWARD_RATE_WEI_PER_SECOND");
         uint256 rewardRateCeiling = vm.envUint("MINEGAME_MAX_REWARD_RATE_WEI_PER_SECOND");
         uint256 gridCapacityPerRoom = vm.envUint("MINEGAME_GRID_CAPACITY_PER_ROOM");
+        bytes32 b20PreflightDigest = vm.envBytes32("MINEGAME_B20_PREFLIGHT_DIGEST");
 
         require(block.chainid == 8453 || block.chainid == 31337, "Base Mainnet or local Anvil only");
         require(token.code.length > 0, "MINEGAME token must be deployed");
@@ -30,6 +43,17 @@ contract DeployMineGameEconomy is Script {
         require(keccak256(bytes(minegameToken.symbol())) == keccak256(bytes("MINEGAME")), "wrong token symbol");
         require(minegameToken.decimals() == 18, "wrong token decimals");
         require(minegameToken.totalSupply() == EXPECTED_SUPPLY, "wrong token supply");
+        require(b20PreflightDigest != bytes32(0), "missing B20 preflight digest");
+
+        IBaseB20Preflight b20 = IBaseB20Preflight(token);
+        require(b20.supplyCap() == EXPECTED_SUPPLY, "supply cap must equal supply");
+        require(b20.pausedFeatures().length == 0, "B20 feature is paused");
+        require(b20.policyId(TRANSFER_SENDER_POLICY) == 0, "sender policy enabled");
+        require(b20.policyId(TRANSFER_RECEIVER_POLICY) == 0, "receiver policy enabled");
+        require(b20.policyId(TRANSFER_EXECUTOR_POLICY) == 0, "executor policy enabled");
+        require(b20.policyId(MINT_RECEIVER_POLICY) == 0, "mint policy enabled");
+        require(b20.policyId(SEIZE_HOLDER_POLICY) == 0, "seize holder policy enabled");
+        require(b20.policyId(SEIZE_RECEIVER_POLICY) == 0, "seize receiver policy enabled");
 
         vm.startBroadcast();
         economy = new MineGameEconomy(
@@ -52,5 +76,6 @@ contract DeployMineGameEconomy is Script {
         console2.log("Owner Safe:", owner);
         console2.log("Treasury Safe:", treasury);
         console2.log("Paused:", economy.paused());
+        console2.logBytes32(b20PreflightDigest);
     }
 }

@@ -81,7 +81,7 @@ contract MineGameEconomy is Ownable2Step, Pausable, ReentrancyGuard {
     mapping(address player => uint256) public playerActiveHashrate;
     mapping(address player => uint256) public playerGridDraw;
     mapping(address player => uint256) public pendingMinegame;
-    mapping(address player => uint256) public rewardDebt;
+    mapping(address player => uint256) public rewardPerHashPaid;
     mapping(address player => uint256[]) private _ownedMinerIds;
     mapping(uint256 minerId => uint256) private _ownedMinerIndexPlusOne;
 
@@ -104,6 +104,7 @@ contract MineGameEconomy is Ownable2Step, Pausable, ReentrancyGuard {
     error SellbackCooldownActive(uint256 availableAt);
     error InsufficientBuybackReserve(uint256 available, uint256 required);
     error NothingToClaim();
+    error ZeroPayout();
     error UnsupportedTransferBehavior();
     error OwnershipRenunciationDisabled();
 
@@ -183,8 +184,8 @@ contract MineGameEconomy is Ownable2Step, Pausable, ReentrancyGuard {
             if (configuredTierId >= nextTierId) nextTierId = configuredTierId + 1;
         }
         if (
-            price == 0 || price > MAX_MINER_PRICE || baseHashrate == 0 || gridDraw == 0 || buybackBps > MAX_BUYBACK_BPS
-                || bytes(metadataURI).length == 0
+            price == 0 || price > MAX_MINER_PRICE || baseHashrate == 0 || gridDraw == 0 || buybackBps == 0
+                || buybackBps > MAX_BUYBACK_BPS || bytes(metadataURI).length == 0
         ) {
             revert InvalidConfiguration();
         }
@@ -326,6 +327,7 @@ contract MineGameEconomy is Ownable2Step, Pausable, ReentrancyGuard {
 
         Tier storage tier = tiers[miner.tierId];
         uint256 payout = Math.mulDiv(miner.buybackBasis, tier.buybackBps, BPS);
+        if (payout == 0) revert ZeroPayout();
         if (payout < minimumPayout) revert PayoutBelowMinimum(payout, minimumPayout);
         if (buybackReserve < payout) revert InsufficientBuybackReserve(buybackReserve, payout);
 
@@ -419,8 +421,10 @@ contract MineGameEconomy is Ownable2Step, Pausable, ReentrancyGuard {
             simulatedAcc += increment;
         }
 
-        uint256 accumulated = Math.mulDiv(playerActiveHashrate[player], simulatedAcc, ACC_REWARD_PRECISION);
-        uint256 newlyAccrued = accumulated > rewardDebt[player] ? accumulated - rewardDebt[player] : 0;
+        uint256 paid = rewardPerHashPaid[player];
+        uint256 newlyAccrued = simulatedAcc > paid
+            ? Math.mulDiv(playerActiveHashrate[player], simulatedAcc - paid, ACC_REWARD_PRECISION)
+            : 0;
         return pendingMinegame[player] + newlyAccrued;
     }
 
@@ -456,31 +460,32 @@ contract MineGameEconomy is Ownable2Step, Pausable, ReentrancyGuard {
         uint256 available = requested < rewardReserve ? requested : rewardReserve;
         uint256 increment = Math.mulDiv(available, ACC_REWARD_PRECISION, totalActiveHashrate);
         if (increment == 0) return;
-        uint256 distributed = Math.mulDiv(increment, totalActiveHashrate, ACC_REWARD_PRECISION);
         accRewardPerHash += increment;
-        rewardReserve -= distributed;
-        rewardLiability += distributed;
+        rewardReserve -= available;
+        rewardLiability += available;
     }
 
     function _accruePlayer(address player) internal {
-        uint256 accumulated = Math.mulDiv(playerActiveHashrate[player], accRewardPerHash, ACC_REWARD_PRECISION);
-        uint256 debt = rewardDebt[player];
-        if (accumulated > debt) pendingMinegame[player] += accumulated - debt;
-        rewardDebt[player] = accumulated;
+        uint256 paid = rewardPerHashPaid[player];
+        uint256 current = accRewardPerHash;
+        if (current > paid && playerActiveHashrate[player] > 0) {
+            pendingMinegame[player] += Math.mulDiv(playerActiveHashrate[player], current - paid, ACC_REWARD_PRECISION);
+        }
+        rewardPerHashPaid[player] = current;
     }
 
     function _addActiveMetrics(address player, uint256 hashrate, uint256 gridDraw) internal {
         totalActiveHashrate += hashrate;
         playerActiveHashrate[player] += hashrate;
         playerGridDraw[player] += gridDraw;
-        rewardDebt[player] = Math.mulDiv(playerActiveHashrate[player], accRewardPerHash, ACC_REWARD_PRECISION);
+        rewardPerHashPaid[player] = accRewardPerHash;
     }
 
     function _removeActiveMetrics(address player, uint256 hashrate, uint256 gridDraw) internal {
         totalActiveHashrate -= hashrate;
         playerActiveHashrate[player] -= hashrate;
         playerGridDraw[player] -= gridDraw;
-        rewardDebt[player] = Math.mulDiv(playerActiveHashrate[player], accRewardPerHash, ACC_REWARD_PRECISION);
+        rewardPerHashPaid[player] = accRewardPerHash;
     }
 
     function _requireCapacity(address player, uint256 addedGridDraw) internal view {

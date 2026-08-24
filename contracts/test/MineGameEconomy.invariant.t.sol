@@ -92,6 +92,7 @@ contract MineGameEconomyHandler is Test {
         }
         (,,, uint16 buybackBps,,) = economy.tiers(tierId);
         uint256 payout = basis * buybackBps / economy.BPS();
+        if (payout == 0) return;
         if (economy.buybackReserve() < payout) return;
         vm.prank(actor);
         economy.sellMinerBack(minerId, payout);
@@ -106,6 +107,25 @@ contract MineGameEconomyHandler is Test {
 
     function warp(uint32 rawElapsed) external {
         vm.warp(block.timestamp + bound(uint256(rawElapsed), 1, 3 days));
+    }
+
+    function setRewardRate(uint96 rawRate) external {
+        uint256 rate = bound(uint256(rawRate), 0, economy.maxRewardRatePerSecond());
+        vm.prank(owner);
+        economy.setRewardRate(rate);
+    }
+
+    function setRoomPrice(uint96 rawPrice) external {
+        uint256 price = bound(uint256(rawPrice), 1, economy.MAX_ROOM_PRICE());
+        vm.prank(owner);
+        economy.setRoomPrice(price);
+    }
+
+    function setTierPrice(uint256 tierSeed, uint96 rawPrice) external {
+        uint256 tierId = (tierSeed % 2) + 1;
+        uint256 price = bound(uint256(rawPrice), 1, economy.MAX_MINER_PRICE());
+        vm.prank(owner);
+        economy.setTierPrice(tierId, price);
     }
 }
 
@@ -153,6 +173,24 @@ contract MineGameEconomyInvariantTest is StdInvariant, Test {
             actorHashrate += economy.playerActiveHashrate(actors[i]);
         }
         assertEq(economy.totalActiveHashrate(), actorHashrate);
+    }
+
+    function invariantPlayerRewardsNeverExceedRecordedAndUncheckpointedLiability() external view {
+        uint256 totalPlayerRewards;
+        for (uint256 i; i < actors.length; ++i) {
+            totalPlayerRewards += economy.pendingRewards(actors[i]);
+        }
+
+        uint256 uncheckpointed;
+        if (
+            !economy.paused() && block.timestamp > economy.lastRewardTime() && economy.totalActiveHashrate() > 0
+                && economy.rewardReserve() > 0
+        ) {
+            uint256 requested =
+                (block.timestamp - uint256(economy.lastRewardTime())) * economy.rewardRatePerSecond();
+            uncheckpointed = requested < economy.rewardReserve() ? requested : economy.rewardReserve();
+        }
+        assertLe(totalPlayerRewards, economy.rewardLiability() + uncheckpointed);
     }
 
     function invariantOwnershipCapacityGridAndHashrateStayConsistent() external view {

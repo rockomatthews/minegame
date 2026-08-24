@@ -424,6 +424,93 @@ contract MineGameEconomyTest is Test {
         vm.stopPrank();
     }
 
+    function testTierCannotDisableSellbackWithZeroBuybackBps() external {
+        vm.prank(owner);
+        vm.expectRevert(MineGameEconomy.InvalidConfiguration.selector);
+        economy.configureTier(2, MINER_PRICE, 100, 1_000, 0, "ipfs://zero-buyback");
+    }
+
+    function testSellbackCannotDestroyMinerForRoundedZeroPayout() external {
+        vm.prank(owner);
+        economy.configureTier(2, 1, 100, 1_000, 1, "ipfs://dust-buyback");
+        vm.prank(alice);
+        uint256 minerId = economy.buyMiner(2, 1);
+        vm.warp(block.timestamp + economy.SELLBACK_COOLDOWN());
+
+        vm.prank(alice);
+        vm.expectRevert(MineGameEconomy.ZeroPayout.selector);
+        economy.sellMinerBack(minerId, 0);
+        (address minerOwner,,,,) = economy.miners(minerId);
+        assertEq(minerOwner, alice);
+    }
+
+    function testRewardAccountingConservesAcrossRepeatedCheckpointsAndBothClaims() external {
+        vm.prank(owner);
+        economy.configureTier(2, 2_000 ether, 250, 2_000, 5_000, "ipfs://tier-two");
+        vm.prank(alice);
+        economy.buyMiner(1, MINER_PRICE);
+        vm.prank(bob);
+        economy.buyMiner(2, 2_000 ether);
+
+        for (uint256 round; round < 6; ++round) {
+            vm.warp(block.timestamp + 1 days);
+            economy.checkpointRewards();
+            assertLe(
+                economy.pendingRewards(alice) + economy.pendingRewards(bob),
+                economy.rewardLiability(),
+                "player credits exceed recorded liability"
+            );
+        }
+
+        vm.prank(alice);
+        economy.claimMinegame();
+        vm.prank(bob);
+        economy.claimMinegame();
+        assertEq(economy.rewardLiability(), 0);
+    }
+
+    function testLastClaimStillWorksAfterEmissionStops() external {
+        vm.prank(owner);
+        economy.configureTier(2, 2_000 ether, 250, 2_000, 5_000, "ipfs://tier-two");
+        vm.prank(alice);
+        economy.buyMiner(1, MINER_PRICE);
+        vm.prank(bob);
+        economy.buyMiner(2, 2_000 ether);
+
+        for (uint256 round; round < 6; ++round) {
+            vm.warp(block.timestamp + 1 days);
+            economy.checkpointRewards();
+        }
+        vm.prank(alice);
+        economy.claimMinegame();
+        vm.startPrank(owner);
+        economy.setRewardRate(0);
+        economy.pause();
+        vm.stopPrank();
+
+        vm.warp(block.timestamp + 3650 days);
+        uint256 expected = economy.pendingRewards(bob);
+        vm.prank(bob);
+        assertEq(economy.claimMinegame(), expected);
+        assertEq(economy.rewardLiability(), 0);
+    }
+
+    function testFuzzPlayerCreditsNeverExceedLiability(uint8 rawRounds) external {
+        uint256 rounds = bound(uint256(rawRounds), 2, 200);
+        vm.prank(owner);
+        economy.configureTier(2, 2_000 ether, 250, 2_000, 5_000, "ipfs://tier-two");
+        vm.prank(alice);
+        economy.buyMiner(1, MINER_PRICE);
+        vm.prank(bob);
+        economy.buyMiner(2, 2_000 ether);
+
+        for (uint256 i; i < rounds; ++i) {
+            vm.warp(block.timestamp + 1 days);
+            economy.checkpointRewards();
+        }
+        assertLe(economy.pendingRewards(alice) + economy.pendingRewards(bob), economy.rewardLiability());
+    }
+
     function testOwnershipCannotBeRenounced() external {
         vm.prank(owner);
         vm.expectRevert(MineGameEconomy.OwnershipRenunciationDisabled.selector);

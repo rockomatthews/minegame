@@ -37,13 +37,13 @@ Do not enter these values until o1's current allocation math, liquidity conseque
 - Save screenshots and unsigned calldata.
 - Obtain audit closure and final economic approval.
 - Simulate the exact transaction against current Base state.
-- Save the canonical B20 address, runtime bytecode hash, verified ABI, factory/implementation path, and evidence that no burn, negative rebase, blacklist, seizure, pause, or upgrade path exists.
+- Record the exact B20 creation block. Run `npm run check:b20`, require `pass: true`, and preserve its JSON and digest. Do not continue if any dangerous role holder, active policy, paused feature, or supply-cap mismatch is reported.
 
 ## After signing
 
 - Verify `name()`, `symbol()`, `decimals()`, `totalSupply()`, `supplyCap()`, and `contractURI()`.
 - Validate the IPFS JSON/image, Uniswap pool, allocations, and vesting.
-- Re-run the fixed-supply/no-admin-token integration review against the deployed address before deploying the game engine.
+- Re-run the fixed-supply/adminless B20 preflight against the deployed address immediately before deploying the game economy.
 - Run `npm run monitor` before adding public purchase links.
 - Add Base App, o1, Uniswap, DexScreener, Fomo, and BaseScan routes only after each resolves.
 - Submit enhanced metadata to services that do not consume B20 data automatically.
