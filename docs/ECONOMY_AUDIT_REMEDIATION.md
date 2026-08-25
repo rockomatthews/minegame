@@ -20,7 +20,7 @@ Regression coverage includes the auditor's two-player/six-checkpoint sequence, b
 
 `scripts/check-b20-adminless.mjs` reconstructs dangerous B20 role membership from creation through the current block and confirms observed holders with `hasRole`. It rejects admin, mint, burn, blocked-burn, seize, pause, unpause, and operator roles; nonzero B20 policies; paused features; or a supply/cap mismatch. `METADATA_ROLE` is intentionally allowed.
 
-The deploy script requires the passing report's nonzero digest and independently rechecks the B20 supply cap, pause state, and policy slots. Because the official B20 view interface does not enumerate role members, the preserved log-derived report is a mandatory deployment artifact.
+The deploy script independently rechecks the B20 supply cap, pause state, and policy slots. Because the official B20 view interface does not enumerate role members, the preserved log-derived report is a mandatory deployment artifact. The exact digest-binding requirement is documented under M-4 below.
 
 ### M-3 — frozen npm install: remediated for Linux CI
 
@@ -31,6 +31,10 @@ The lockfile now carries explicit top-level optional entries for `@emnapi/core@1
 The deploy script no longer accepts an arbitrary nonzero report digest. Its compile-time expected digest is deliberately zero, making deployment impossible until the exact reviewed live-token report digest is pinned in a subsequent reviewed commit; deployment then requires exact equality.
 
 The preflight now queries and asserts the RPC's actual chain ID, probes every account ever observed in relevant grant or revocation logs in both directions against live `hasRole`, requires current runtime bytecode to match deployment bytecode, and rejects nonzero EIP-1967 implementation, admin, or beacon slots.
+
+### L-7 — malformed EIP-1967 admin slot: remediated
+
+The EIP-1967 slot constants are canonical and self-verified at startup by deriving each value from its documented preimage. A malformed or incorrect constant therefore fails before any storage query or report generation.
 
 ### L-1 / L-2 — zero-value sellback: remediated
 

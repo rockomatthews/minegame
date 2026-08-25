@@ -6,6 +6,7 @@ import {
   parseAbi,
   parseAbiItem,
   toBytes,
+  toHex,
 } from "viem";
 import { base } from "viem/chains";
 
@@ -45,9 +46,20 @@ if (currentCode !== codeAtDeployment) throw new Error("Token runtime code change
 const zeroWord = `0x${"00".repeat(32)}`;
 const proxySlots = {
   implementation: "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-  admin: "0xb53127684a568b3173ae13b9f8a6016e019900f831b7e6e8ee1178d6a717850b5",
+  admin: "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
   beacon: "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50",
 };
+const proxySlotPreimages = {
+  implementation: "eip1967.proxy.implementation",
+  admin: "eip1967.proxy.admin",
+  beacon: "eip1967.proxy.beacon",
+};
+for (const [name, slot] of Object.entries(proxySlots)) {
+  const derivedSlot = toHex(BigInt(keccak256(toBytes(proxySlotPreimages[name]))) - 1n, { size: 32 });
+  if (slot.length !== 66 || slot !== derivedSlot) {
+    throw new Error(`Invalid EIP-1967 ${name} slot constant`);
+  }
+}
 const proxySlotEntries = await Promise.all(
   Object.entries(proxySlots).map(async ([name, slot]) => [
     name,
