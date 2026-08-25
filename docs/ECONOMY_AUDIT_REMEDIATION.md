@@ -36,6 +36,10 @@ The preflight now queries and asserts the RPC's actual chain ID, probes every ac
 
 The EIP-1967 slot constants are canonical and self-verified at startup by deriving each value from its documented preimage. A malformed or incorrect constant therefore fails before any storage query or report generation.
 
+### L-8 — live B20 seizure-scope compatibility: remediated
+
+The launched o1 B20 implements the four transfer/mint policy scopes but returns the canonical `UnsupportedPolicyType(bytes32)` error for the two newer seizure scopes. The preflight and deployment script accept that response only for `SEIZE_HOLDER_POLICY` and `SEIZE_RECEIVER_POLICY`, only when the revert selector and embedded scope exactly match. A supported nonzero seizure policy, an unsupported mandatory scope, malformed return data, or any other failure remains fatal. The log-derived gate still requires both `DEFAULT_ADMIN_ROLE` and `SEIZE_ROLE` to have no holders.
+
 ### L-1 / L-2 — zero-value sellback: remediated
 
 Tier creation rejects zero buyback basis points, and `sellMinerBack` rejects a payout that rounds to zero before changing miner ownership or accounting. Both guards have direct regression tests.

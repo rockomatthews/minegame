@@ -75,7 +75,7 @@ npm run build
 
 The economy suite includes unit, 10,000-run fuzz, and stateful invariant campaigns. `fail_on_revert` is enabled, so any unexpected handler revert fails the campaign. Please add independent PoCs rather than relying only on project tests.
 
-Latest remediation verification: 56 Foundry tests passed, 0 failed, including 31 focused economy unit/fuzz tests, four economy invariant campaigns at 512 runs × 100 calls with zero handler reverts, and a deployment regression proving an arbitrary nonzero preflight digest cannot bypass the pinned release gate. `MineGameEconomy` runtime bytecode is 15,847 bytes, leaving 8,729 bytes below the EIP-170 limit. Linux `npm ci`, `forge fmt --check`, ESLint, the Next.js production build, and the documented Slither command pass. The auditor must reproduce these results from the frozen remediation commit.
+Latest remediation verification: 59 Foundry tests passed, 0 failed, including 31 focused economy unit/fuzz tests, four economy invariant campaigns at 512 runs × 100 calls with zero handler reverts, a deployment regression proving an arbitrary nonzero preflight digest cannot bypass the pinned release gate, and three live-B20 compatibility regressions. Those regressions prove that only the exact `UnsupportedPolicyType(bytes32)` response for an optional seizure scope is accepted; supported nonzero policy IDs and every other failure remain fatal. `MineGameEconomy` runtime bytecode is 15,847 bytes, leaving 8,729 bytes below the EIP-170 limit. Linux `npm ci`, `forge fmt --check`, ESLint, the Next.js production build, and the documented Slither command pass. The auditor must reproduce these results from the frozen remediation commit.
 
 ## Static analysis
 

@@ -2,6 +2,9 @@
 pragma solidity 0.8.26;
 
 contract B20PreflightMock {
+    error UnsupportedPolicyType(bytes32 policyScope);
+    error UnexpectedPolicyFailure(bytes32 policyScope);
+
     string public name = "MineGame";
     string public symbol = "MINEGAME";
     uint8 public decimals = 18;
@@ -12,6 +15,7 @@ contract B20PreflightMock {
     mapping(address => mapping(address => uint256)) public allowance;
     mapping(bytes32 => mapping(address => bool)) private _roles;
     mapping(bytes32 => uint64) private _policyId;
+    mapping(bytes32 => uint8) private _policyBehavior;
     uint8[] private _pausedFeatures;
 
     event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
@@ -33,7 +37,17 @@ contract B20PreflightMock {
     }
 
     function policyId(bytes32 policyScope) external view returns (uint64) {
+        if (_policyBehavior[policyScope] == 1) revert UnsupportedPolicyType(policyScope);
+        if (_policyBehavior[policyScope] == 2) revert UnexpectedPolicyFailure(policyScope);
         return _policyId[policyScope];
+    }
+
+    function setPolicy(bytes32 policyScope, uint64 newPolicyId) external {
+        _policyId[policyScope] = newPolicyId;
+    }
+
+    function setPolicyBehavior(bytes32 policyScope, uint8 behavior) external {
+        _policyBehavior[policyScope] = behavior;
     }
 
     function pausedFeatures() external view returns (uint8[] memory) {

@@ -11,6 +11,8 @@ interface IBaseB20Preflight {
     function policyId(bytes32 policyScope) external view returns (uint64);
 }
 
+error UnsupportedPolicyType(bytes32 policyScope);
+
 /// @notice Deploys the paused MINEGAME miner economy after the canonical o1 B20 exists.
 /// @dev This script does not configure tiers, fund reserves, unpause, or launch the token.
 contract DeployMineGameEconomy is Script {
@@ -58,8 +60,8 @@ contract DeployMineGameEconomy is Script {
         require(b20.policyId(TRANSFER_RECEIVER_POLICY) == 0, "receiver policy enabled");
         require(b20.policyId(TRANSFER_EXECUTOR_POLICY) == 0, "executor policy enabled");
         require(b20.policyId(MINT_RECEIVER_POLICY) == 0, "mint policy enabled");
-        require(b20.policyId(SEIZE_HOLDER_POLICY) == 0, "seize holder policy enabled");
-        require(b20.policyId(SEIZE_RECEIVER_POLICY) == 0, "seize receiver policy enabled");
+        _requireZeroOrUnsupportedPolicy(b20, SEIZE_HOLDER_POLICY, "seize holder policy enabled");
+        _requireZeroOrUnsupportedPolicy(b20, SEIZE_RECEIVER_POLICY, "seize receiver policy enabled");
 
         vm.startBroadcast();
         economy = new MineGameEconomy(
@@ -83,5 +85,32 @@ contract DeployMineGameEconomy is Script {
         console2.log("Treasury Safe:", treasury);
         console2.log("Paused:", economy.paused());
         console2.logBytes32(b20PreflightDigest);
+    }
+
+    function _requireZeroOrUnsupportedPolicy(IBaseB20Preflight b20, bytes32 policyScope, string memory nonzeroMessage)
+        internal
+        view
+    {
+        (bool success, bytes memory returnData) =
+            address(b20).staticcall(abi.encodeCall(IBaseB20Preflight.policyId, (policyScope)));
+
+        if (success) {
+            require(returnData.length == 32, "malformed seize policy response");
+            require(abi.decode(returnData, (uint64)) == 0, nonzeroMessage);
+            return;
+        }
+
+        bytes4 errorSelector;
+        bytes32 revertedScope;
+        if (returnData.length == 36) {
+            assembly ("memory-safe") {
+                errorSelector := mload(add(returnData, 0x20))
+                revertedScope := mload(add(returnData, 0x24))
+            }
+        }
+        require(
+            errorSelector == UnsupportedPolicyType.selector && revertedScope == policyScope,
+            "unexpected seize policy response"
+        );
     }
 }

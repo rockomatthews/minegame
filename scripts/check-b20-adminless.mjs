@@ -132,6 +132,34 @@ const abi = parseAbi([
   "function hasRole(bytes32 role,address account) view returns (bool)",
 ]);
 const read = (functionName, args = []) => client.readContract({ address: token, abi, functionName, args });
+const unsupportedPolicyTypeSelector = keccak256(toBytes("UnsupportedPolicyType(bytes32)")).slice(0, 10);
+const optionalPolicyNames = new Set(["SEIZE_HOLDER_POLICY", "SEIZE_RECEIVER_POLICY"]);
+const findRevertData = (error) => {
+  let current = error;
+  for (let depth = 0; current && depth < 12; depth += 1) {
+    for (const field of ["raw", "data"]) {
+      if (typeof current[field] === "string" && current[field].startsWith("0x")) return current[field];
+    }
+    current = current.cause;
+  }
+  return undefined;
+};
+const readPolicy = async (policyName) => {
+  const policyScope = roleHash(policyName);
+  try {
+    return { status: "supported", policyId: await read("policyId", [policyScope]) };
+  } catch (error) {
+    const revertData = findRevertData(error);
+    const expectedUnsupportedError = `${unsupportedPolicyTypeSelector}${policyScope.slice(2)}`;
+    if (
+      optionalPolicyNames.has(policyName)
+      && revertData?.toLowerCase() === expectedUnsupportedError.toLowerCase()
+    ) {
+      return { status: "unsupported", policyId: null };
+    }
+    throw error;
+  }
+};
 const [name, symbol, decimals, totalSupply, supplyCap, pausedFeatures] = await Promise.all([
   read("name"),
   read("symbol"),
@@ -162,7 +190,7 @@ const policyNames = [
   "SEIZE_RECEIVER_POLICY",
 ];
 const policyEntries = await Promise.all(
-  policyNames.map(async (policyName) => [policyName, await read("policyId", [roleHash(policyName)])]),
+  policyNames.map(async (policyName) => [policyName, await readPolicy(policyName)]),
 );
 const policies = Object.fromEntries(policyEntries);
 
@@ -178,8 +206,10 @@ for (const roleName of forbiddenRoleNames) {
   const accounts = [...holders.get(roleName)];
   if (accounts.length) failures.push(`${roleName} holders: ${accounts.join(",")}`);
 }
-for (const [policyName, policyId] of Object.entries(policies)) {
-  if (policyId !== 0n) failures.push(`${policyName} is policy ${policyId}`);
+for (const [policyName, policy] of Object.entries(policies)) {
+  if (policy.status === "supported" && policy.policyId !== 0n) {
+    failures.push(`${policyName} is policy ${policy.policyId}`);
+  }
 }
 
 const report = {
@@ -198,7 +228,12 @@ const report = {
   pausedFeatures,
   forbiddenRoleHolders: Object.fromEntries(forbiddenRoleNames.map((roleName) => [roleName, [...holders.get(roleName)]])),
   metadataRoleHolders: [...holders.get("METADATA_ROLE")],
-  policies: Object.fromEntries(Object.entries(policies).map(([key, value]) => [key, value.toString()])),
+  policies: Object.fromEntries(
+    Object.entries(policies).map(([key, value]) => [
+      key,
+      value.status === "supported" ? { status: value.status, policyId: value.policyId.toString() } : value,
+    ]),
+  ),
   roleEventsScanned: logs.length,
   roleAccountsCrossChecked: Object.fromEntries(
     observedRoleNames.map((roleName) => [roleName, [...observedAccounts.get(roleName)]]),
