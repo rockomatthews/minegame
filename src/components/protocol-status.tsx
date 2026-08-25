@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./protocol-status.module.css";
 
 type Status = {
-  phase: "prelaunch" | "configured" | "live" | "degraded";
+  phase: "prelaunch" | "token-live" | "configured" | "live" | "degraded";
   network: string;
   token: string | null;
   economy: string | null;
@@ -37,7 +37,7 @@ export function ProtocolStatus() {
       .catch(() => undefined);
     return () => controller.abort();
   }, []);
-  const label = status.phase === "live" ? "Economy live" : status.phase === "configured" ? "Configured · paused" : status.phase === "degraded" ? "Status degraded" : "Pre-launch";
+  const label = status.phase === "live" ? "Economy live" : status.phase === "configured" ? "Configured · paused" : status.phase === "token-live" ? "Token live · game pending" : status.phase === "degraded" ? "Status degraded" : "Pre-launch";
   const short = (address: string | null) => address ? `${address.slice(0, 6)}…${address.slice(-4)}` : "Not deployed";
   return (
     <div className={styles.inner}>

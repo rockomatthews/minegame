@@ -3,5 +3,9 @@
 .brand img { border-radius: 50%; }
 .header nav { display: flex; gap: 28px; color: #9f906c; font-size: .72rem; font-weight: 800; }
 .header nav a:hover { color: #ffe696; }
-.roomButton { justify-self: end; padding: 9px 14px; border: 1px solid rgb(246 189 59 / 34%); border-radius: 5px; color: #f6d77f; font-size: .66rem; font-weight: 900; text-transform: uppercase; }
-@media (max-width: 720px) { .header { grid-template-columns: 1fr auto; } .header nav { display: none; } .roomButton { font-size: .58rem; } }
+.actions { justify-self: end; display: flex; align-items: center; gap: 8px; }
+.buyButton, .roomButton { padding: 9px 14px; border-radius: 5px; font-size: .66rem; font-weight: 900; text-transform: uppercase; }
+.buyButton { border: 1px solid #f6bd3b; color: #120d03; background: linear-gradient(180deg, #ffe58a, #e8a91f); }
+.roomButton { border: 1px solid rgb(246 189 59 / 34%); color: #f6d77f; }
+@media (max-width: 720px) { .header { grid-template-columns: 1fr auto; } .header nav { display: none; } .buyButton, .roomButton { padding-inline: 10px; font-size: .58rem; } }
+@media (max-width: 460px) { .roomButton { display: none; } }

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import coinLogo from "../../public/assets/minegame-logo.png";
+import { MINEGAME_BASE_APP_URL } from "@/lib/minegame";
 import styles from "./site-header.module.css";
 
 export function SiteHeader() {
@@ -16,7 +17,10 @@ export function SiteHeader() {
         <Link href="/game">How it works</Link>
         <Link href="/launch">Launch</Link>
       </nav>
-      <Link className={styles.roomButton} href="/">Enter room</Link>
+      <div className={styles.actions}>
+        <a className={styles.buyButton} href={MINEGAME_BASE_APP_URL} target="_blank" rel="noreferrer">Buy MINEGAME ↗</a>
+        <Link className={styles.roomButton} href="/">Enter room</Link>
+      </div>
     </header>
   );
 }

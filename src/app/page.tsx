@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import coinLogo from "../../public/assets/minegame-logo.png";
 import { MinerDashboard } from "@/components/miner-showroom";
+import { MINEGAME_BASE_APP_URL } from "@/lib/minegame";
 import styles from "./page.module.css";
 
 const navItems = [
@@ -26,9 +27,16 @@ export default function Home() {
           <div><span>Room</span><strong>01 / 01</strong></div>
         </div>
 
-        <button className={styles.walletButton} type="button" title="Wallet connection activates after launch">
-          <span className={styles.statusDot} /> Connect wallet
-        </button>
+        <div className={styles.topActions}>
+          <a className={styles.buyCoinButton} href={MINEGAME_BASE_APP_URL} target="_blank" rel="noreferrer">
+            <span className={styles.buyCoinLong}>Buy MINEGAME</span>
+            <span className={styles.buyCoinShort}>Buy coin</span>
+            <small>Base App ↗</small>
+          </a>
+          <button className={styles.walletButton} type="button" title="Wallet connection activates when the game economy launches" disabled>
+            <span className={styles.statusDot} /> Game pending
+          </button>
+        </div>
       </header>
 
       <div className={styles.gameBody}>

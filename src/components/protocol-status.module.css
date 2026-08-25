@@ -5,6 +5,7 @@
 .inner strong { color: #d7c797; font-size: .75rem; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: #f6bd3b; box-shadow: 0 0 12px rgb(246 189 59 / 65%); }
 .dot[data-phase="live"] { background: #93e36a; box-shadow: 0 0 12px rgb(147 227 106 / 65%); }
+.dot[data-phase="token-live"] { background: #f6bd3b; box-shadow: 0 0 12px rgb(246 189 59 / 65%); }
 .dot[data-phase="configured"] { background: #61bfff; box-shadow: 0 0 12px rgb(97 191 255 / 65%); }
 .dot[data-phase="degraded"] { background: #ff714a; box-shadow: 0 0 12px rgb(255 113 74 / 65%); }
 @media (max-width: 900px) { .inner { grid-template-columns: repeat(2, 1fr); gap: 18px; } .inner > div, .inner > div:first-child { padding: 0; border: 0; } }

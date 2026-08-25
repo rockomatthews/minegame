@@ -1,5 +1,6 @@
 import { createPublicClient, formatUnits, http, isAddress } from "viem";
 import { base } from "viem/chains";
+import { MINEGAME_TOKEN_ADDRESS } from "@/lib/minegame";
 
 const tokenAbi = [
   { type: "function", name: "totalSupply", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
@@ -18,14 +19,27 @@ const economyAbi = [
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const token = process.env.NEXT_PUBLIC_MINEGAME_TOKEN_ADDRESS;
+  const token = process.env.NEXT_PUBLIC_MINEGAME_TOKEN_ADDRESS || MINEGAME_TOKEN_ADDRESS;
   const economy = process.env.NEXT_PUBLIC_MINEGAME_ECONOMY_ADDRESS;
-  if (!token || !economy || !isAddress(token) || !isAddress(economy)) {
-    return Response.json({ phase: "prelaunch", network: "Base Mainnet", token: null, economy: null });
+  if (!isAddress(token)) {
+    return Response.json({ phase: "degraded", network: "Base Mainnet", token: null, economy: null, error: "Invalid token address" }, { status: 500 });
   }
 
   try {
     const client = createPublicClient({ chain: base, transport: http(process.env.BASE_RPC_URL || "https://mainnet.base.org") });
+    if (!economy) {
+      const totalSupply = await client.readContract({ address: token, abi: tokenAbi, functionName: "totalSupply" });
+      return Response.json({
+        phase: "token-live",
+        network: "Base Mainnet",
+        token,
+        economy: null,
+        totalSupply: formatUnits(totalSupply, 18),
+      }, { headers: { "Cache-Control": "public, s-maxage=15, stale-while-revalidate=45" } });
+    }
+    if (!isAddress(economy)) {
+      return Response.json({ phase: "degraded", network: "Base Mainnet", token, economy: null, error: "Invalid economy address" }, { status: 500 });
+    }
     const [totalSupply, economyToken, paused, rewardReserve, buybackReserve, rewardLiability, totalActiveHashrate, runwaySeconds, solvent] = await Promise.all([
       client.readContract({ address: token, abi: tokenAbi, functionName: "totalSupply" }),
       client.readContract({ address: economy, abi: economyAbi, functionName: "minegame" }),
