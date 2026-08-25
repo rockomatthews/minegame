@@ -4,6 +4,10 @@ MineGame is a Base-native virtual mining economy built around a fixed-supply `MI
 
 The canonical website is `https://minegame.fun`. The web app is prepared for Vercel, but this repository does not deploy the site, launch the token, or broadcast a contract transaction.
 
+## Token metadata authority
+
+The creator wallet `0x8A0182c099A618583e9EF98716DAcF739b3BD944` permanently holds the Base B20 `METADATA_ROLE`. It can change the token name, symbol, and contract URI. Because MINEGAME was created adminless, this role cannot be revoked or transferred. These display-level changes do not alter the fixed supply or MineGame economy accounting, but they can change how the token appears in wallets, explorers, and exchanges.
+
 ## Repository layout
 
 - `contracts/` — Foundry contracts for the historical POWER engine and the new MINEGAME-only miner economy.

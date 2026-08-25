@@ -17,9 +17,9 @@ error UnsupportedPolicyType(bytes32 policyScope);
 /// @dev This script does not configure tiers, fund reserves, unpause, or launch the token.
 contract DeployMineGameEconomy is Script {
     uint256 internal constant EXPECTED_SUPPLY = 1_000_000_000 ether;
-    // Intentionally zero until the live Base B20 preflight report is reviewed.
-    // Deployment remains impossible until this exact digest is pinned in a reviewed commit.
-    bytes32 internal constant EXPECTED_B20_PREFLIGHT_DIGEST = bytes32(0);
+    // Pins the independently reviewed live Base B20 preflight through block 50,455,632.
+    bytes32 internal constant EXPECTED_B20_PREFLIGHT_DIGEST =
+        0x19bbc24e301041791f65a494db4654b341bfff4084c35c6db6d640a08b0e51ef;
     bytes32 internal constant TRANSFER_SENDER_POLICY = keccak256("TRANSFER_SENDER_POLICY");
     bytes32 internal constant TRANSFER_RECEIVER_POLICY = keccak256("TRANSFER_RECEIVER_POLICY");
     bytes32 internal constant TRANSFER_EXECUTOR_POLICY = keccak256("TRANSFER_EXECUTOR_POLICY");

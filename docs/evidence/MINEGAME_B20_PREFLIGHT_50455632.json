@@ -1,0 +1,75 @@
+{
+  "pass": true,
+  "digest": "0x19bbc24e301041791f65a494db4654b341bfff4084c35c6db6d640a08b0e51ef",
+  "chainId": 8453,
+  "checkedThroughBlock": "50455632",
+  "deploymentBlock": "50453755",
+  "token": "0xB20000000000000000000033307E6D1bB78b0201",
+  "deploymentRuntimeCodeHash": "0x309b8896ee4c1ff7ec1966155373dee42663b6b40c3fedc70ba501684848d2a3",
+  "currentRuntimeCodeHash": "0x309b8896ee4c1ff7ec1966155373dee42663b6b40c3fedc70ba501684848d2a3",
+  "eip1967Slots": {
+    "implementation": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "admin": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "beacon": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "name": "MineGame",
+  "symbol": "MINEGAME",
+  "decimals": 18,
+  "totalSupply": "1000000000000000000000000000",
+  "supplyCap": "1000000000000000000000000000",
+  "pausedFeatures": [],
+  "forbiddenRoleHolders": {
+    "DEFAULT_ADMIN_ROLE": [],
+    "MINT_ROLE": [],
+    "BURN_ROLE": [],
+    "BURN_BLOCKED_ROLE": [],
+    "SEIZE_ROLE": [],
+    "PAUSE_ROLE": [],
+    "UNPAUSE_ROLE": [],
+    "OPERATOR_ROLE": []
+  },
+  "metadataRoleHolders": [
+    "0x8A0182c099A618583e9EF98716DAcF739b3BD944"
+  ],
+  "policies": {
+    "TRANSFER_SENDER_POLICY": {
+      "status": "supported",
+      "policyId": "0"
+    },
+    "TRANSFER_RECEIVER_POLICY": {
+      "status": "supported",
+      "policyId": "0"
+    },
+    "TRANSFER_EXECUTOR_POLICY": {
+      "status": "supported",
+      "policyId": "0"
+    },
+    "MINT_RECEIVER_POLICY": {
+      "status": "supported",
+      "policyId": "0"
+    },
+    "SEIZE_HOLDER_POLICY": {
+      "status": "unsupported",
+      "policyId": null
+    },
+    "SEIZE_RECEIVER_POLICY": {
+      "status": "unsupported",
+      "policyId": null
+    }
+  },
+  "roleEventsScanned": 1,
+  "roleAccountsCrossChecked": {
+    "DEFAULT_ADMIN_ROLE": [],
+    "MINT_ROLE": [],
+    "BURN_ROLE": [],
+    "BURN_BLOCKED_ROLE": [],
+    "SEIZE_ROLE": [],
+    "PAUSE_ROLE": [],
+    "UNPAUSE_ROLE": [],
+    "OPERATOR_ROLE": [],
+    "METADATA_ROLE": [
+      "0x8A0182c099A618583e9EF98716DAcF739b3BD944"
+    ]
+  },
+  "failures": []
+}
