@@ -25,14 +25,38 @@ const chunkSize = BigInt(process.env.B20_LOG_CHUNK_SIZE ?? "10000");
 if (deploymentBlock <= 0n || chunkSize <= 0n) throw new Error("Invalid block input");
 
 const client = createPublicClient({ chain: base, transport: http(rpcUrl) });
+const rpcChainId = await client.getChainId();
+if (rpcChainId !== base.id) {
+  throw new Error(`Wrong RPC chain: expected ${base.id}, received ${rpcChainId}`);
+}
 const latestBlock = await client.getBlockNumber();
 if (deploymentBlock > latestBlock) throw new Error("Deployment block is in the future");
 
 const codeAtDeployment = await client.getBytecode({ address: token, blockNumber: deploymentBlock });
 const codeBeforeDeployment = await client.getBytecode({ address: token, blockNumber: deploymentBlock - 1n });
+const currentCode = await client.getBytecode({ address: token, blockNumber: latestBlock });
 if (!codeAtDeployment || codeAtDeployment === "0x") throw new Error("No token code at deployment block");
 if (codeBeforeDeployment && codeBeforeDeployment !== "0x") {
   throw new Error("Token code existed before MINEGAME_TOKEN_DEPLOYMENT_BLOCK");
+}
+if (!currentCode || currentCode === "0x") throw new Error("Token has no current runtime code");
+if (currentCode !== codeAtDeployment) throw new Error("Token runtime code changed after deployment");
+
+const zeroWord = `0x${"00".repeat(32)}`;
+const proxySlots = {
+  implementation: "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+  admin: "0xb53127684a568b3173ae13b9f8a6016e019900f831b7e6e8ee1178d6a717850b5",
+  beacon: "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50",
+};
+const proxySlotEntries = await Promise.all(
+  Object.entries(proxySlots).map(async ([name, slot]) => [
+    name,
+    (await client.getStorageAt({ address: token, slot, blockNumber: latestBlock })) ?? zeroWord,
+  ]),
+);
+const proxySlotValues = Object.fromEntries(proxySlotEntries);
+for (const [name, value] of Object.entries(proxySlotValues)) {
+  if (value !== zeroWord) throw new Error(`Nonzero EIP-1967 ${name} slot: ${value}`);
 }
 
 const roleGranted = parseAbiItem(
@@ -74,11 +98,13 @@ const observedRoleNames = [...forbiddenRoleNames, "METADATA_ROLE"];
 const roles = Object.fromEntries(observedRoleNames.map((name) => [name, roleHash(name)]));
 const roleNamesByHash = new Map(Object.entries(roles).map(([name, hash]) => [hash.toLowerCase(), name]));
 const holders = new Map(observedRoleNames.map((name) => [name, new Set()]));
+const observedAccounts = new Map(observedRoleNames.map((name) => [name, new Set()]));
 
 for (const log of logs) {
   const name = roleNamesByHash.get(log.args.role.toLowerCase());
   if (!name) continue;
   const account = getAddress(log.args.account);
+  observedAccounts.get(name).add(account);
   if (log.granted) holders.get(name).add(account);
   else holders.get(name).delete(account);
 }
@@ -104,9 +130,13 @@ const [name, symbol, decimals, totalSupply, supplyCap, pausedFeatures] = await P
 ]);
 
 for (const roleName of observedRoleNames) {
-  for (const account of holders.get(roleName)) {
-    if (!(await read("hasRole", [roles[roleName], account]))) {
-      throw new Error(`Role-log reconstruction disagrees with hasRole for ${roleName}/${account}`);
+  for (const account of observedAccounts.get(roleName)) {
+    const liveMembership = await read("hasRole", [roles[roleName], account]);
+    const reconstructedMembership = holders.get(roleName).has(account);
+    if (liveMembership !== reconstructedMembership) {
+      throw new Error(
+        `Role-log reconstruction disagrees with hasRole for ${roleName}/${account}: reconstructed=${reconstructedMembership}, live=${liveMembership}`,
+      );
     }
   }
 }
@@ -141,11 +171,13 @@ for (const [policyName, policyId] of Object.entries(policies)) {
 }
 
 const report = {
-  chainId: base.id,
+  chainId: rpcChainId,
   checkedThroughBlock: latestBlock.toString(),
   deploymentBlock: deploymentBlock.toString(),
   token,
-  runtimeCodeHash: keccak256(codeAtDeployment),
+  deploymentRuntimeCodeHash: keccak256(codeAtDeployment),
+  currentRuntimeCodeHash: keccak256(currentCode),
+  eip1967Slots: proxySlotValues,
   name,
   symbol,
   decimals,
@@ -156,6 +188,9 @@ const report = {
   metadataRoleHolders: [...holders.get("METADATA_ROLE")],
   policies: Object.fromEntries(Object.entries(policies).map(([key, value]) => [key, value.toString()])),
   roleEventsScanned: logs.length,
+  roleAccountsCrossChecked: Object.fromEntries(
+    observedRoleNames.map((roleName) => [roleName, [...observedAccounts.get(roleName)]]),
+  ),
 };
 const digest = keccak256(toBytes(JSON.stringify(report)));
 console.log(JSON.stringify({ pass: failures.length === 0, digest, ...report, failures }, null, 2));

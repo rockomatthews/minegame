@@ -1,61 +1,38 @@
-.header { position: sticky; z-index: 20; top: 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 76px; padding: 0 4vw; border-bottom: 1px solid rgb(246 189 59 / 14%); background: rgb(9 7 4 / 84%); backdrop-filter: blur(18px); }
-.brand { display: flex; align-items: center; gap: 10px; width: fit-content; color: var(--gold-light); font-size: .9rem; font-weight: 900; letter-spacing: .18em; }
-.brand img { border-radius: 50%; }
-.nav { display: flex; gap: 32px; color: var(--muted); font-size: .82rem; font-weight: 700; }
-.nav a:hover { color: var(--gold-light); }
-.smallCta { justify-self: end; padding: 10px 16px; border: 1px solid rgb(246 189 59 / 35%); border-radius: 999px; color: var(--gold-light); font-size: .78rem; font-weight: 800; }
-.hero { position: relative; min-height: calc(100svh - 76px); padding: 22px 2vw 24px; overflow: hidden; isolation: isolate; }
-.hero::before { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, rgb(5 4 3 / 17%), rgb(5 4 3 / 8%) 58%, rgb(5 4 3 / 52%)), url("/assets/minegame-showroom-backdrop.png") center / cover no-repeat; content: ""; }
-.hero::after { position: absolute; z-index: -1; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 46%, transparent 28%, rgb(5 4 3 / 28%) 100%); content: ""; }
-.kicker { color: var(--gold); font-size: .72rem; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
-.statusStrip { border-block: 1px solid rgb(246 189 59 / 13%); background: #0e0b07; }
-.section, .mineSection, .ageSection, .supplySection, .launchSection { max-width: 1480px; margin: 0 auto; padding: 120px 6vw; }
-.sectionHeading { display: grid; grid-template-columns: .38fr 1fr .82fr; gap: 42px; align-items: end; margin-bottom: 56px; }
-.sectionHeading h2, .ageSection h2, .supplyCopy h2, .launchCard h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.4rem, 4.2vw, 4.8rem); font-weight: 500; letter-spacing: -.045em; line-height: .98; }
-.sectionHeading > p:last-child, .supplyCopy p, .launchCard > div > p:last-child { color: var(--muted); line-height: 1.7; }
-.mechanicsGrid { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid rgb(246 189 59 / 15%); }
-.mechanicCard { min-height: 310px; padding: 32px 28px; border-right: 1px solid rgb(246 189 59 / 15%); background: linear-gradient(145deg, rgb(255 255 255 / 2%), transparent); }
-.mechanicCard:last-child { border-right: 0; }
-.mechanicCard > span { color: var(--copper); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .75rem; }
-.mechanicCard h3 { margin-top: 82px; color: var(--gold-light); font-family: Georgia, "Times New Roman", serif; font-size: 1.7rem; font-weight: 500; }
-.mechanicCard p { margin-top: 14px; color: var(--muted); font-size: .9rem; line-height: 1.65; }
-.mineSection { max-width: none; background: linear-gradient(180deg, transparent, rgb(72 42 11 / 18%), transparent); }
-.mineSection > * { max-width: 1300px; margin-inline: auto; }
-.ageSection { display: grid; grid-template-columns: .6fr 1.4fr; gap: 80px; align-items: center; }
-.ageSection h2 { margin-top: 14px; }
-.ageTrack { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.ageLine { position: absolute; top: 8px; right: 8%; left: 8%; height: 1px; background: linear-gradient(90deg, var(--copper), var(--gold)); }
-.agePoint { position: relative; text-align: center; }
-.agePoint > span { position: relative; z-index: 1; display: block; width: 16px; height: 16px; margin: 0 auto 24px; border: 3px solid var(--black); border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
-.agePoint strong { display: block; color: var(--gold-light); font-family: Georgia, "Times New Roman", serif; font-size: 1.8rem; }
-.agePoint p { margin-top: 6px; color: var(--ink); font-size: .8rem; font-weight: 800; }
-.agePoint small { display: block; margin-top: 4px; color: var(--muted); font-size: .7rem; }
-.supplySection { display: grid; grid-template-columns: 1.15fr .85fr; gap: 70px; align-items: end; border-block: 1px solid rgb(246 189 59 / 12%); }
-.supplyNumber span, .supplyNumber p { display: block; color: var(--muted); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-.supplyNumber strong { display: block; margin-block: 12px 8px; color: var(--gold); font-family: Georgia, "Times New Roman", serif; font-size: clamp(3rem, 6vw, 7rem); font-weight: 500; letter-spacing: -.06em; line-height: .9; }
-.supplyCopy h2 { margin-bottom: 20px; font-size: clamp(2rem, 3vw, 3.6rem); }
-.launchCard { display: grid; grid-template-columns: 1fr .9fr; gap: 80px; padding: 64px; border: 1px solid rgb(246 189 59 / 22%); background: linear-gradient(135deg, rgb(246 189 59 / 7%), transparent 38%), var(--rock); }
-.launchCard h2 { margin-block: 14px 24px; }
-.launchCard ol { list-style: none; }
-.launchCard li { display: flex; align-items: center; gap: 18px; padding: 18px 0; border-bottom: 1px solid rgb(246 189 59 / 13%); color: var(--muted); font-size: .9rem; }
-.launchCard li span { color: var(--gold); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .72rem; }
-.footer { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 130px; padding: 24px 4vw; border-top: 1px solid rgb(246 189 59 / 13%); color: var(--muted); font-size: .74rem; }
-.footer > p:last-child { justify-self: end; }
-@media (max-width: 1050px) {
-  .sectionHeading { grid-template-columns: 1fr 2fr; } .sectionHeading > p:last-child { grid-column: 2; }
-  .mechanicsGrid { grid-template-columns: repeat(2, 1fr); } .mechanicCard:nth-child(2) { border-right: 0; } .mechanicCard:nth-child(-n + 2) { border-bottom: 1px solid rgb(246 189 59 / 15%); }
-  .ageSection, .supplySection, .launchCard { grid-template-columns: 1fr; }
+.gameShell { width: 100%; height: 100svh; overflow: hidden; background: #070603; }
+.topBar { position: relative; z-index: 20; display: grid; grid-template-columns: minmax(210px, 1fr) auto minmax(210px, 1fr); align-items: center; height: 68px; padding: 0 18px; border-bottom: 1px solid rgb(246 189 59 / 18%); background: linear-gradient(180deg, #151009, #0b0905); box-shadow: 0 8px 24px rgb(0 0 0 / 42%); }
+.brand { display: flex; align-items: center; gap: 10px; width: fit-content; }
+.brand img { border: 1px solid rgb(246 189 59 / 45%); border-radius: 50%; box-shadow: 0 0 18px rgb(246 189 59 / 12%); }
+.brand > span { display: grid; }
+.brand strong { color: #ffe69a; font-size: .82rem; letter-spacing: .17em; }
+.brand small { margin-top: 2px; color: #76694d; font-size: .5rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.resources { display: flex; align-items: stretch; height: 44px; overflow: hidden; border: 1px solid rgb(246 189 59 / 15%); border-radius: 7px; background: #080704; }
+.resources > div { display: grid; min-width: 112px; align-content: center; padding: 0 17px; border-right: 1px solid rgb(246 189 59 / 12%); text-align: center; }
+.resources > div:last-child { border-right: 0; }
+.resources span { color: #776a4e; font-size: .48rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.resources strong { margin-top: 2px; color: #f4d98f; font-size: .72rem; }
+.walletButton { justify-self: end; min-height: 38px; padding: 0 15px; border: 1px solid rgb(246 189 59 / 32%); border-radius: 5px; color: #f8df9c; background: linear-gradient(180deg, rgb(246 189 59 / 10%), rgb(246 189 59 / 3%)); cursor: pointer; font-size: .65rem; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+.statusDot { display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: #6f674f; box-shadow: 0 0 0 3px rgb(111 103 79 / 12%); }
+.gameBody { display: grid; grid-template-columns: 78px minmax(0, 1fr); height: calc(100svh - 68px); overflow: hidden; }
+.sideNav { position: relative; z-index: 10; display: flex; flex-direction: column; gap: 5px; padding: 12px 8px; border-right: 1px solid rgb(246 189 59 / 15%); background: linear-gradient(90deg, #100d08, #0a0805); }
+.sideNav a { display: grid; place-items: center; min-height: 64px; padding: 8px 4px; border: 1px solid transparent; border-radius: 7px; color: #776b50; }
+.sideNav a:hover { color: #d9c68e; background: rgb(255 255 255 / 3%); }
+.sideNav a > span { font-size: 1.15rem; line-height: 1; }
+.sideNav a > strong { margin-top: 6px; font-size: .5rem; letter-spacing: .06em; text-transform: uppercase; }
+.sideNav .navActive { border-color: rgb(246 189 59 / 30%); color: #f6bd3b; background: linear-gradient(145deg, rgb(246 189 59 / 14%), rgb(246 189 59 / 3%)); box-shadow: inset 3px 0 #f6bd3b; }
+.roomStage { position: relative; min-width: 0; min-height: 0; padding: 13px; overflow: hidden; isolation: isolate; }
+.roomStage::before { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, rgb(4 3 2 / 10%), rgb(4 3 2 / 20%) 55%, rgb(4 3 2 / 72%)), url("/assets/minegame-showroom-backdrop.png") center / cover no-repeat; content: ""; }
+.roomStage::after { position: absolute; z-index: -1; inset: 0; pointer-events: none; background: radial-gradient(circle at 52% 45%, transparent 22%, rgb(0 0 0 / 40%) 100%); content: ""; }
+@media (max-width: 850px) {
+  .topBar { grid-template-columns: 1fr auto; height: 62px; padding-inline: 12px; }
+  .resources { display: none; }
+  .gameBody { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) 62px; height: calc(100svh - 62px); }
+  .roomStage { grid-row: 1; padding: 8px; }
+  .sideNav { grid-row: 2; flex-direction: row; justify-content: space-around; padding: 5px 8px; border-top: 1px solid rgb(246 189 59 / 15%); border-right: 0; }
+  .sideNav a { flex: 1; min-height: 50px; }
+  .sideNav .navActive { box-shadow: inset 0 -3px #f6bd3b; }
 }
-@media (max-width: 760px) {
-  .header { grid-template-columns: 1fr auto; min-height: 66px; } .nav { display: none; } .smallCta { padding: 9px 12px; }
-  .hero { min-height: auto; padding: 14px 3vw 22px; } .hero::before { background-position: center; }
-  .section, .mineSection, .ageSection, .supplySection, .launchSection { padding: 82px 6vw; }
-  .sectionHeading { grid-template-columns: 1fr; gap: 18px; } .sectionHeading > p:last-child { grid-column: auto; }
-  .mechanicsGrid { grid-template-columns: 1fr; } .mechanicCard { min-height: 250px; border-right: 0; border-bottom: 1px solid rgb(246 189 59 / 15%); } .mechanicCard h3 { margin-top: 50px; }
-  .ageSection { gap: 50px; } .ageTrack { grid-template-columns: repeat(2, 1fr); gap: 36px 12px; } .ageLine { display: none; }
-  .supplyNumber strong { overflow-wrap: anywhere; } .launchCard { gap: 46px; padding: 36px 24px; }
-  .footer { grid-template-columns: 1fr; gap: 20px; padding-block: 40px; text-align: center; } .footer .brand, .footer > p:last-child { justify-self: center; }
-}
-@media (max-height: 700px) and (min-width: 761px) {
-  .hero { padding-block: 12px; }
+@media (max-width: 480px) {
+  .brand small { display: none; }
+  .brand img { width: 36px; height: 36px; }
+  .walletButton { padding-inline: 10px; font-size: .56rem; }
 }

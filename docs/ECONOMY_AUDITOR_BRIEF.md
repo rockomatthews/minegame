@@ -18,7 +18,7 @@ The historical `MineGameEngine.sol` POWER staking engine is outside this focused
 - Foundry fuzz: 10,000 runs
 - Foundry invariants: 512 runs, depth 100
 
-Install JavaScript dependencies with `npm ci`, not `npm install`, so the exact lockfile is honored.
+Install JavaScript dependencies with `npm ci`, not `npm install`, so the exact lockfile is honored. The lockfile includes explicit top-level optional emnapi fallback entries required for reproducible Linux CI.
 
 ## In-scope files
 
@@ -75,7 +75,7 @@ npm run build
 
 The economy suite includes unit, 10,000-run fuzz, and stateful invariant campaigns. `fail_on_revert` is enabled, so any unexpected handler revert fails the campaign. Please add independent PoCs rather than relying only on project tests.
 
-Latest remediation verification: 55 Foundry tests passed, 0 failed, including 31 focused economy unit/fuzz tests and four economy invariant campaigns at 512 runs × 100 calls with zero handler reverts. `MineGameEconomy` runtime bytecode is 15,847 bytes, leaving 8,729 bytes below the EIP-170 limit. `npm ci`, `forge fmt --check`, ESLint, the Next.js production build, and the documented Slither command pass. The auditor must reproduce these results from the frozen remediation commit.
+Latest remediation verification: 56 Foundry tests passed, 0 failed, including 31 focused economy unit/fuzz tests, four economy invariant campaigns at 512 runs × 100 calls with zero handler reverts, and a deployment regression proving an arbitrary nonzero preflight digest cannot bypass the pinned release gate. `MineGameEconomy` runtime bytecode is 15,847 bytes, leaving 8,729 bytes below the EIP-170 limit. Linux `npm ci`, `forge fmt --check`, ESLint, the Next.js production build, and the documented Slither command pass. The auditor must reproduce these results from the frozen remediation commit.
 
 ## Static analysis
 
@@ -87,7 +87,7 @@ No deployment, tier configuration, reserve funding, approval, unpause, or token 
 
 1. Freeze and independently review the exact commit.
 2. Close all Critical and High findings in writing and retest remediations.
-3. Verify the live o1 B20 address, creation block, bytecode, ABI, factory/implementation, supply, and absence of burn/rebase/blacklist/seizure/pause/upgrade behavior. Run `npm run check:b20`, require `pass: true`, and preserve its report and digest.
+3. Verify the live o1 B20 address, creation block, bytecode, ABI, factory/implementation, supply, and absence of burn/rebase/blacklist/seizure/pause/upgrade behavior. Run `npm run check:b20` through an archive-capable Base RPC, require `pass: true`, preserve its report, and pin its exact digest into the deploy script in a reviewed commit.
 4. Simulate the exact deployment against a current Base Mainnet fork/precompile environment.
 5. Independently approve primary prices, reward rate/ceiling, grid capacity, buyback percentages, tier metadata CIDs, initial reward funding, and initial buyback funding.
 6. Deploy paused and verify source code.

@@ -22,9 +22,15 @@ Regression coverage includes the auditor's two-player/six-checkpoint sequence, b
 
 The deploy script requires the passing report's nonzero digest and independently rechecks the B20 supply cap, pause state, and policy slots. Because the official B20 view interface does not enumerate role members, the preserved log-derived report is a mandatory deployment artifact.
 
-### M-3 — frozen npm install: closed by reproduction
+### M-3 — frozen npm install: remediated for Linux CI
 
-`npm ci` succeeds from the current lockfile. `@emnapi/core` and `@emnapi/runtime` are present in `package-lock.json`; no lockfile change was needed.
+The lockfile now carries explicit top-level optional entries for `@emnapi/core@1.11.3` and `@emnapi/runtime@1.11.3`, including their registry integrity hashes and dependencies. This closes the Linux-only `npm ci` consistency failure while allowing unsupported-platform optional packages to remain skipped at installation time.
+
+### M-4 / L-4 / L-5 / L-6 — B20 preflight binding and evidence: remediated
+
+The deploy script no longer accepts an arbitrary nonzero report digest. Its compile-time expected digest is deliberately zero, making deployment impossible until the exact reviewed live-token report digest is pinned in a subsequent reviewed commit; deployment then requires exact equality.
+
+The preflight now queries and asserts the RPC's actual chain ID, probes every account ever observed in relevant grant or revocation logs in both directions against live `hasRole`, requires current runtime bytecode to match deployment bytecode, and rejects nonzero EIP-1967 implementation, admin, or beacon slots.
 
 ### L-1 / L-2 — zero-value sellback: remediated
 

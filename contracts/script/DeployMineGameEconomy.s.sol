@@ -15,6 +15,9 @@ interface IBaseB20Preflight {
 /// @dev This script does not configure tiers, fund reserves, unpause, or launch the token.
 contract DeployMineGameEconomy is Script {
     uint256 internal constant EXPECTED_SUPPLY = 1_000_000_000 ether;
+    // Intentionally zero until the live Base B20 preflight report is reviewed.
+    // Deployment remains impossible until this exact digest is pinned in a reviewed commit.
+    bytes32 internal constant EXPECTED_B20_PREFLIGHT_DIGEST = bytes32(0);
     bytes32 internal constant TRANSFER_SENDER_POLICY = keccak256("TRANSFER_SENDER_POLICY");
     bytes32 internal constant TRANSFER_RECEIVER_POLICY = keccak256("TRANSFER_RECEIVER_POLICY");
     bytes32 internal constant TRANSFER_EXECUTOR_POLICY = keccak256("TRANSFER_EXECUTOR_POLICY");
@@ -43,7 +46,10 @@ contract DeployMineGameEconomy is Script {
         require(keccak256(bytes(minegameToken.symbol())) == keccak256(bytes("MINEGAME")), "wrong token symbol");
         require(minegameToken.decimals() == 18, "wrong token decimals");
         require(minegameToken.totalSupply() == EXPECTED_SUPPLY, "wrong token supply");
-        require(b20PreflightDigest != bytes32(0), "missing B20 preflight digest");
+        require(
+            EXPECTED_B20_PREFLIGHT_DIGEST != bytes32(0) && b20PreflightDigest == EXPECTED_B20_PREFLIGHT_DIGEST,
+            "B20 preflight digest mismatch"
+        );
 
         IBaseB20Preflight b20 = IBaseB20Preflight(token);
         require(b20.supplyCap() == EXPECTED_SUPPLY, "supply cap must equal supply");

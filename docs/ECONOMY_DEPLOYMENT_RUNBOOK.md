@@ -38,7 +38,9 @@ export MINEGAME_B20_PREFLIGHT_DIGEST=0x...
 
 Copy the `digest` only from a report with `"pass": true`. Preserve the complete JSON with the audit/deployment evidence. The check proves the supplied block is the creation block, reconstructs role membership from every `RoleGranted` and `RoleRevoked` event, confirms current membership with `hasRole`, and rejects any holder of admin, mint, burn, blocked-burn, seize, pause, unpause, or operator authority. It permits `METADATA_ROLE` so the approved metadata can remain mutable. It also requires fixed supply/cap, no paused features, and all built-in policy slots at the always-allow policy (`0`).
 
-The B20 ABI does not enumerate role members. The Solidity deploy script therefore cannot independently discover every historical role holder; it requires the offchain report digest and repeats every directly enumerable B20 check onchain. A digest is an evidence gate, not a substitute for preserving and reviewing its JSON report.
+Before deployment can compile as an authorized release, replace the deliberately zero `EXPECTED_B20_PREFLIGHT_DIGEST` constant in `DeployMineGameEconomy.s.sol` with that exact reviewed digest and commit the change. The deploy script requires exact equality. Any other value—including an arbitrary nonzero value—fails closed. Pinning the digest is a new review gate because it binds the release to one token report at one Base block.
+
+The B20 ABI does not enumerate role members. The Solidity deploy script therefore cannot independently discover every historical role holder; it requires the pinned offchain report digest and repeats every directly enumerable B20 check onchain. The report also asserts Base chain ID, compares deployment and current runtime bytecode, checks EIP-1967 implementation/admin/beacon slots, and cross-checks every address ever observed in relevant role events. Use an archive-capable RPC and preserve the JSON; the digest does not replace the evidence it binds.
 
 Do not put a private key in a committed file. Use the approved wallet/broadcast method only after deployment authorization.
 
