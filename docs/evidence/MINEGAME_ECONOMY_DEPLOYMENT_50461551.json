@@ -1,0 +1,47 @@
+{
+  "chainId": 8453,
+  "transactionHash": "0x17f3590c370131d8f35f767d6f45ead669768c64fa19d7a439fcfeacb459f837",
+  "blockNumber": 50461551,
+  "status": 1,
+  "deployer": "0x8A0182c099A618583e9EF98716DAcF739b3BD944",
+  "contract": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+  "runtimeCodeBytes": 15847,
+  "runtimeComparison": {
+    "compilerDeclaredImmutableSlots": 15,
+    "differingBytes": 156,
+    "differencesOutsideImmutableSlots": 0
+  },
+  "sourceVerification": {
+    "provider": "Sourcify",
+    "status": "exact_match",
+    "jobId": "071220d9-1ea7-4ffb-97ca-cfc880d92fa4"
+  },
+  "preflight": {
+    "pinnedDigest": "0x19bbc24e301041791f65a494db4654b341bfff4084c35c6db6d640a08b0e51ef",
+    "immediateDigest": "0x9875d4de5239f4adf3edbd0cf3046d4be1ec42e063467e7fa1605f5ba7705956",
+    "checkedThroughBlock": 50461546,
+    "pass": true,
+    "failures": []
+  },
+  "constructor": {
+    "owner": "0x4114de71ccc0277e2fCe16909067F785cD742FDb",
+    "token": "0xB20000000000000000000033307E6D1bB78b0201",
+    "treasury": "0xD9A7b8DB19C9A4012a78bBa7CA3555C4e75f14e1",
+    "roomPrice": "100000000000000000000000",
+    "initialRewardRatePerSecond": "0",
+    "maxRewardRatePerSecond": "1000000000000000000",
+    "gridCapacityPerRoom": "500"
+  },
+  "verifiedState": {
+    "paused": true,
+    "solvent": true,
+    "rewardRatePerSecond": "0"
+  },
+  "excludedActions": [
+    "configureTier",
+    "fundRewards",
+    "fundBuybacks",
+    "token approval",
+    "unpause"
+  ]
+}

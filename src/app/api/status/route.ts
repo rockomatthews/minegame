@@ -1,4 +1,4 @@
-import { createPublicClient, formatUnits, http, isAddress } from "viem";
+import { createPublicClient, fallback, formatUnits, http, isAddress } from "viem";
 import { base } from "viem/chains";
 import { MINEGAME_TOKEN_ADDRESS } from "@/lib/minegame";
 
@@ -26,7 +26,12 @@ export async function GET() {
   }
 
   try {
-    const client = createPublicClient({ chain: base, transport: http(process.env.BASE_RPC_URL || "https://mainnet.base.org") });
+    const rpcTransports = [
+      ...(process.env.BASE_RPC_URL ? [http(process.env.BASE_RPC_URL)] : []),
+      http("https://mainnet.base.org"),
+      http("https://base-rpc.publicnode.com"),
+    ];
+    const client = createPublicClient({ chain: base, transport: fallback(rpcTransports, { rank: false }) });
     if (!economy) {
       const totalSupply = await client.readContract({ address: token, abi: tokenAbi, functionName: "totalSupply" });
       return Response.json({
@@ -40,17 +45,16 @@ export async function GET() {
     if (!isAddress(economy)) {
       return Response.json({ phase: "degraded", network: "Base Mainnet", token, economy: null, error: "Invalid economy address" }, { status: 500 });
     }
-    const [totalSupply, economyToken, paused, rewardReserve, buybackReserve, rewardLiability, totalActiveHashrate, runwaySeconds, solvent] = await Promise.all([
-      client.readContract({ address: token, abi: tokenAbi, functionName: "totalSupply" }),
-      client.readContract({ address: economy, abi: economyAbi, functionName: "minegame" }),
-      client.readContract({ address: economy, abi: economyAbi, functionName: "paused" }),
-      client.readContract({ address: economy, abi: economyAbi, functionName: "rewardReserve" }),
-      client.readContract({ address: economy, abi: economyAbi, functionName: "buybackReserve" }),
-      client.readContract({ address: economy, abi: economyAbi, functionName: "rewardLiability" }),
-      client.readContract({ address: economy, abi: economyAbi, functionName: "totalActiveHashrate" }),
-      client.readContract({ address: economy, abi: economyAbi, functionName: "rewardRunwaySeconds" }),
-      client.readContract({ address: economy, abi: economyAbi, functionName: "isSolvent" }),
-    ]);
+    // Sequential reads keep public fallback RPCs below burst limits during provider outages.
+    const totalSupply = await client.readContract({ address: token, abi: tokenAbi, functionName: "totalSupply" });
+    const economyToken = await client.readContract({ address: economy, abi: economyAbi, functionName: "minegame" });
+    const paused = await client.readContract({ address: economy, abi: economyAbi, functionName: "paused" });
+    const rewardReserve = await client.readContract({ address: economy, abi: economyAbi, functionName: "rewardReserve" });
+    const buybackReserve = await client.readContract({ address: economy, abi: economyAbi, functionName: "buybackReserve" });
+    const rewardLiability = await client.readContract({ address: economy, abi: economyAbi, functionName: "rewardLiability" });
+    const totalActiveHashrate = await client.readContract({ address: economy, abi: economyAbi, functionName: "totalActiveHashrate" });
+    const runwaySeconds = await client.readContract({ address: economy, abi: economyAbi, functionName: "rewardRunwaySeconds" });
+    const solvent = await client.readContract({ address: economy, abi: economyAbi, functionName: "isSolvent" });
     const tokenMatches = economyToken.toLowerCase() === token.toLowerCase();
     const healthy = solvent && tokenMatches;
 
