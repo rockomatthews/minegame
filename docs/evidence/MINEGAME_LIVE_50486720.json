@@ -1,0 +1,30 @@
+{
+  "chainId": 8453,
+  "token": "0xB20000000000000000000033307E6D1bB78b0201",
+  "economy": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+  "ownerSafe": "0x4114de71ccc0277e2fCe16909067F785cD742FDb",
+  "safeTransactionHash": "0xc87e36192c2bb2cedf6d7f1c96b7ec133288e1b787db068e8ecf10a872a86851",
+  "executionTransactionHash": "0xc2759df377ff4c30c3d21e7a1f469f854323e9f33c3196fa7f99a69e3eee927b",
+  "blockNumber": 50486720,
+  "status": 1,
+  "call": {
+    "target": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+    "method": "unpause()",
+    "calldata": "0x3f4ba83a",
+    "valueWei": "0"
+  },
+  "verifiedState": {
+    "paused": false,
+    "solvent": true,
+    "rewardReserveWei": "100000000000000000000000",
+    "rewardRateWeiPerSecond": "250000000000000",
+    "rewardLiabilityWei": "0",
+    "totalActiveHashrate": "0",
+    "activeTierCount": 10,
+    "rewardRunwaySeconds": "400000000"
+  },
+  "productionStatus": {
+    "url": "https://www.minegame.fun",
+    "phase": "live"
+  }
+}

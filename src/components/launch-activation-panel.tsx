@@ -26,7 +26,7 @@ export function LaunchActivationPanel() {
   return (
     <section className={styles.activation} aria-label="Approved MineGame activation controls">
       <div className={styles.activationHeader}>
-        <div><p className={styles.eyebrow}>Approved activation</p><h2>Fund rewards, then set the rate.</h2></div>
+        <div><p className={styles.eyebrow}>{game?.paused ? "Approved activation" : "Live on Base"}</p><h2>{game?.paused ? "Fund rewards, then set the rate." : "The MineGame economy is live."}</h2></div>
         <strong>{game?.paused ? "Economy remains paused" : "Economy is live"}</strong>
       </div>
       <div className={styles.activationGrid}>
@@ -39,7 +39,7 @@ export function LaunchActivationPanel() {
         {rateSet ? <button type="button" disabled>Rate confirmed on Base</button> : <a href={RATE_BATCH} download>3. Download Owner Safe rate file</a>}
         {funded && rateSet && game?.paused ? <a href={UNPAUSE_BATCH} download>Final: Download unpause file</a> : null}
       </div>
-      <p className={styles.activationNotice} aria-live="polite">{notice} The final file contains one Owner Safe unpause call and no other transaction. Importing it does not execute it; the Safe still requires its normal confirmations.</p>
+      <p className={styles.activationNotice} aria-live="polite">{game?.paused ? `${notice} The final file contains one Owner Safe unpause call and no other transaction.` : "Unpause confirmed on Base. Players can now buy miners, purchase rooms, list and trade miners, sell eligible miners back, and claim earned MINEGAME."}</p>
     </section>
   );
 }
