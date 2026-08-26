@@ -5,6 +5,7 @@
 .roomTabs { display: flex; justify-self: center; gap: 7px; }
 .roomTabs button { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid rgb(246 189 59 / 16%); border-radius: 6px; color: #8e805d; background: rgb(255 255 255 / 2%); cursor: pointer; text-align: left; }
 .roomTabs button:hover { border-color: rgb(246 189 59 / 40%); }
+.roomTabs button:disabled { cursor: not-allowed; opacity: .52; }
 .roomTabs button > span { color: #f6bd3b; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .63rem; }
 .roomTabs button strong { font-size: .65rem; }
 .roomTabs .roomActive { border-color: rgb(147 227 106 / 34%); color: #d8efc4; background: rgb(85 126 50 / 10%); }
@@ -25,20 +26,26 @@
 .minerVisual { position: relative; flex: 0 0 132px; height: 132px; overflow: hidden; background: radial-gradient(circle at 50% 60%, rgb(246 189 59 / 13%), transparent 65%); }
 .minerVisual img { width: 100%; height: 100%; object-fit: cover; }
 .online { position: absolute; top: 7px; right: 7px; padding: 3px 5px; border: 1px solid rgb(147 227 106 / 28%); border-radius: 999px; color: #bce8a0; background: rgb(29 50 19 / 80%); font-size: .46rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.listed { position: absolute; top: 7px; right: 7px; padding: 3px 5px; border: 1px solid rgb(246 189 59 / 36%); border-radius: 999px; color: #ffe39a; background: rgb(74 49 10 / 86%); font-size: .46rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
 .minerInfo { padding: 9px 10px 10px; }
 .minerInfo > div:first-child > span, .marketGrid article span { color: #9d8b61; font-size: .48rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
 .minerInfo h2 { margin-top: 2px; overflow: hidden; color: #ffe3a0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(.9rem, 1.2vw, 1.16rem); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
 .minerInfo dl { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 8px; padding-top: 7px; border-top: 1px solid rgb(246 189 59 / 13%); }
 .minerInfo dt { color: #74694e; font-size: .43rem; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; }
 .minerInfo dd { margin-top: 2px; color: #dcca95; font-size: .57rem; font-weight: 800; }
+.minerActions { display: flex; gap: 5px; margin-top: 8px; }
+.minerActions button { flex: 1; min-height: 25px; border: 1px solid rgb(246 189 59 / 22%); border-radius: 3px; color: #cdbb87; background: rgb(246 189 59 / 4%); cursor: pointer; font-size: .47rem; font-weight: 900; text-transform: uppercase; }
+.minerActions button:disabled { cursor: not-allowed; opacity: .4; }
 .emptySlot { display: grid; align-content: center; justify-items: center; min-height: 218px; border-style: dashed; color: #887956; cursor: pointer; }
 .emptySlot:hover { border-color: rgb(246 189 59 / 55%); color: #f6bd3b; background: rgb(42 29 10 / 66%); }
 .emptySlot > span { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 10px; border: 1px solid currentColor; border-radius: 50%; font-size: 1.4rem; }
 .emptySlot strong { color: #c8b98e; font-size: .72rem; }
 .emptySlot small { margin-top: 4px; font-size: .56rem; }
-.actionBar { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 11px 16px; border-top: 1px solid rgb(246 189 59 / 17%); background: rgb(7 6 4 / 92%); backdrop-filter: blur(18px); }
+.actionBar { display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center; padding: 11px 16px; border-top: 1px solid rgb(246 189 59 / 17%); background: rgb(7 6 4 / 92%); backdrop-filter: blur(18px); }
 .yieldReadout strong { display: block; margin-top: 2px; color: #f6bd3b; font-size: .88rem; }
-.repairButton, .marketButton { min-height: 38px; padding: 0 15px; border-radius: 4px; cursor: pointer; font-size: .67rem; font-weight: 900; text-transform: uppercase; }
+.claimButton, .repairButton, .marketButton { min-height: 38px; padding: 0 15px; border-radius: 4px; cursor: pointer; font-size: .67rem; font-weight: 900; text-transform: uppercase; }
+.claimButton { border: 1px solid rgb(246 189 59 / 34%); color: #f6bd3b; background: rgb(246 189 59 / 7%); }
+.claimButton:disabled { cursor: not-allowed; opacity: .45; }
 .repairButton { border: 1px solid rgb(147 227 106 / 38%); color: #d9f4c6; background: rgb(75 112 49 / 15%); }
 .repairButton:disabled { color: #7e8a72; cursor: default; opacity: .7; }
 .marketButton { border: 0; color: #171005; background: linear-gradient(135deg, #ffe696, #f6bd3b); }
@@ -50,12 +57,25 @@
 .market > header h2 { margin-top: 3px; color: #ffe6a0; font-family: Georgia, "Times New Roman", serif; font-size: 1.7rem; font-weight: 500; }
 .market > header button { width: 36px; height: 36px; border: 1px solid rgb(246 189 59 / 22%); border-radius: 50%; color: #ffe6a0; background: transparent; cursor: pointer; font-size: 1.5rem; }
 .marketIntro { padding: 11px 20px; color: #877958; font-size: .67rem; line-height: 1.45; }
+.marketTabs { display: flex; gap: 7px; padding: 12px 20px 0; }
+.marketTabs button { padding: 8px 12px; border: 1px solid rgb(246 189 59 / 18%); border-radius: 4px; color: #887a58; background: transparent; cursor: pointer; font-size: .58rem; font-weight: 900; text-transform: uppercase; }
+.marketTabs .marketTabActive { border-color: rgb(246 189 59 / 44%); color: #f6bd3b; background: rgb(246 189 59 / 8%); }
 .marketGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; max-height: 580px; padding: 0 20px 20px; overflow-y: auto; }
 .marketGrid article { display: grid; grid-template-columns: 78px 1fr auto; gap: 11px; align-items: center; min-width: 0; padding: 7px; border: 1px solid rgb(246 189 59 / 13%); background: #100d08; }
 .marketGrid img { width: 78px; height: 78px; object-fit: cover; border-radius: 5px; }
 .marketGrid h3 { margin-top: 2px; color: #ead69e; font-family: Georgia, "Times New Roman", serif; font-size: 1rem; font-weight: 500; }
 .marketGrid article strong { display: block; margin-top: 5px; color: #f6bd3b; font-size: .61rem; }
-.marketGrid article button { padding: 8px 10px; border: 1px solid rgb(246 189 59 / 32%); color: #f6bd3b; background: transparent; cursor: pointer; font-size: .58rem; font-weight: 900; text-transform: uppercase; }
+.marketGrid article button, .marketGrid article > a { padding: 8px 10px; border: 1px solid rgb(246 189 59 / 32%); color: #f6bd3b; background: transparent; cursor: pointer; font-size: .58rem; font-weight: 900; text-align: center; text-transform: uppercase; }
+.marketGrid article button:disabled { cursor: not-allowed; opacity: .45; }
+.marketEmpty { grid-column: 1 / -1; padding: 45px 20px; color: #8d7d59; text-align: center; }
+.listingDialog { width: min(430px, 100%); padding: 24px; border: 1px solid rgb(246 189 59 / 32%); border-radius: 13px; color: #e7d49d; background: #0b0906; box-shadow: 0 35px 100px #000; }
+.listingDialog > span { color: #f6bd3b; font-size: .58rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.listingDialog h2 { margin-top: 5px; color: #ffe6a0; font-family: Georgia, "Times New Roman", serif; font-size: 1.55rem; font-weight: 500; }
+.listingDialog input { width: 100%; margin-top: 18px; padding: 12px; border: 1px solid rgb(246 189 59 / 26%); border-radius: 5px; color: #ffe6a0; background: #050403; font: 700 .9rem ui-monospace, SFMono-Regular, Menlo, monospace; }
+.listingDialog p { margin-top: 12px; color: #897a58; font-size: .65rem; line-height: 1.5; }
+.listingDialog > div { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+.listingDialog button { padding: 9px 12px; border: 1px solid rgb(246 189 59 / 28%); border-radius: 4px; color: #f6bd3b; background: transparent; cursor: pointer; font-size: .6rem; font-weight: 900; text-transform: uppercase; }
+.listingDialog button:last-child { color: #171005; background: #f6bd3b; }
 @media (max-width: 900px) {
   .dashboard { height: 100%; min-height: 0; }
   .dashboardHeader { grid-template-columns: 1fr auto; }
@@ -86,7 +106,7 @@
   .slots { grid-template-columns: repeat(5, 142px); }
   .minerCard, .emptySlot { min-height: 180px; }
   .emptySlot > span { width: 30px; height: 30px; margin-bottom: 6px; }
-  .actionBar { grid-template-columns: 1fr auto; padding: 8px 10px; }
+  .actionBar { grid-template-columns: 1fr auto auto; padding: 8px 10px; }
   .yieldReadout, .notice { display: none; }
   .repairButton { display: none; }
   .marketButton { min-height: 34px; }
