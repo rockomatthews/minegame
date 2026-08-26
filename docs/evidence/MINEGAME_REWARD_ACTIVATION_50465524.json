@@ -1,0 +1,35 @@
+{
+  "chainId": 8453,
+  "token": "0xB20000000000000000000033307E6D1bB78b0201",
+  "economy": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+  "ownerSafe": "0x4114de71ccc0277e2fCe16909067F785cD742FDb",
+  "funder": "0x8A0182c099A618583e9EF98716DAcF739b3BD944",
+  "funding": {
+    "transactionHash": "0x1539b670601edd3072b86d81d390514bc87b492f88ac5a5549fca4b0d620ec92",
+    "blockNumber": 50465447,
+    "status": 1,
+    "amountWei": "100000000000000000000000",
+    "amountMinegame": "100000"
+  },
+  "rewardRate": {
+    "transactionHash": "0x46842d8fb058faf3f5b3ed4c0385fa07f76e4737216ecb49d34461b96839bae0",
+    "blockNumber": 50465524,
+    "status": 1,
+    "rateWeiPerSecond": "250000000000000",
+    "rateMinegamePerSecond": "0.00025",
+    "globalMinegamePerDay": "21.6"
+  },
+  "verifiedState": {
+    "paused": true,
+    "solvent": true,
+    "rewardReserveWei": "100000000000000000000000",
+    "rewardLiabilityWei": "0",
+    "accountedTokenBalanceWei": "100000000000000000000000",
+    "actualTokenBalanceWei": "100000000000000000000000",
+    "funderAllowanceWei": "0",
+    "rewardRunwaySeconds": "400000000"
+  },
+  "excludedActions": [
+    "unpause"
+  ]
+}

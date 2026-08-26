@@ -35,7 +35,7 @@ export function LaunchActivationPanel() {
       </div>
       <div className={styles.activationActions}>
         {!account ? <button type="button" onClick={() => void connect()}>Connect funding wallet</button> : !isFunder ? <button type="button" disabled>Connect approved wallet</button> : funded ? <button type="button" disabled>100K funding confirmed</button> : !hasBalance ? <button type="button" disabled>Insufficient MINEGAME</button> : !hasAllowance ? <button type="button" onClick={() => void approve(FUNDING_AMOUNT)} disabled={Boolean(pendingAction)}>1. Approve exactly 100K</button> : <button type="button" onClick={() => void fundRewards(FUNDING_AMOUNT)} disabled={Boolean(pendingAction)}>2. Fund exactly 100K</button>}
-        <a href={RATE_BATCH} download>3. Download Owner Safe rate file</a>
+        {rateSet ? <button type="button" disabled>Rate confirmed on Base</button> : <a href={RATE_BATCH} download>3. Download Owner Safe rate file</a>}
       </div>
       <p className={styles.activationNotice} aria-live="polite">{notice} This panel cannot unpause the economy. The rate file contains one setRewardRate call and no other transaction.</p>
     </section>
