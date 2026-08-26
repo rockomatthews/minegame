@@ -51,4 +51,5 @@ export const minegameEconomyAbi = [
   { type: "function", name: "cancelListing", stateMutability: "nonpayable", inputs: [{ name: "minerId", type: "uint256" }], outputs: [] },
   { type: "function", name: "buyListedMiner", stateMutability: "nonpayable", inputs: [{ name: "minerId", type: "uint256" }, { name: "maxPrice", type: "uint256" }], outputs: [] },
   { type: "function", name: "sellMinerBack", stateMutability: "nonpayable", inputs: [{ name: "minerId", type: "uint256" }, { name: "minimumPayout", type: "uint256" }], outputs: [] },
+  { type: "function", name: "fundRewards", stateMutability: "nonpayable", inputs: [{ name: "amount", type: "uint256" }], outputs: [] },
 ] as const;

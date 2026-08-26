@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "chainId": "8453",
+  "createdAt": 1787719000000,
+  "meta": {
+    "name": "MineGame approved reward rate",
+    "description": "One setRewardRate call for 0.00025 MINEGAME/second. No funding, approval, tier change, or unpause.",
+    "txBuilderVersion": "1.18.0",
+    "createdFromSafeAddress": "0x4114de71ccc0277e2fCe16909067F785cD742FDb",
+    "createdFromOwnerAddress": ""
+  },
+  "transactions": [
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x9e447fc60000000000000000000000000000000000000000000000000000e35fa931a000",
+      "contractMethod": {
+        "type": "function",
+        "name": "setRewardRate",
+        "stateMutability": "nonpayable",
+        "inputs": [{ "internalType": "uint256", "name": "newRate", "type": "uint256" }],
+        "outputs": []
+      },
+      "contractInputsValues": { "newRate": "250000000000000" }
+    }
+  ]
+}

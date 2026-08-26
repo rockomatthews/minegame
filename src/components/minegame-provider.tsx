@@ -114,6 +114,7 @@ type MineGameContextValue = {
   cancelListing: (minerId: bigint) => Promise<void>;
   buyListedMiner: (minerId: bigint, maxPrice: bigint) => Promise<void>;
   sellMinerBack: (minerId: bigint, minimumPayout: bigint) => Promise<void>;
+  fundRewards: (amount: bigint) => Promise<void>;
 };
 
 const MineGameContext = createContext<MineGameContextValue | null>(null);
@@ -302,6 +303,9 @@ export function MineGameProvider({ children }: { children: ReactNode }) {
     })),
     sellMinerBack: (minerId: bigint, minimumPayout: bigint) => submit("Sell miner back", MINEGAME_ECONOMY_ADDRESS, encodeFunctionData({
       abi: minegameEconomyAbi, functionName: "sellMinerBack", args: [minerId, minimumPayout],
+    })),
+    fundRewards: (amount: bigint) => submit("Fund reward reserve", MINEGAME_ECONOMY_ADDRESS, encodeFunctionData({
+      abi: minegameEconomyAbi, functionName: "fundRewards", args: [amount],
     })),
   }), [submit]);
 
