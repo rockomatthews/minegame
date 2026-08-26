@@ -41,6 +41,7 @@ const miners: Miner[] = [
 
 const installedMiners: Miner[] = [];
 const roomCapacity = 5;
+const roomGridCapacity = 50;
 const roomPrice = 100_000;
 const claimableMinegame = 0;
 const projectedDailyMinegame = 0;
@@ -101,7 +102,7 @@ export function MinerDashboard() {
 
       <div className={styles.stats} aria-label="Current room performance">
         <div><span>Total hashrate</span><strong>{totalHashRate.toFixed(2)}x</strong><small>combined output</small></div>
-        <div><span>Grid consumption</span><strong>{totalGridDraw.toFixed(1)} / 5.0 kW</strong><small>{Math.round((totalGridDraw / 5) * 100)}% room load</small></div>
+        <div><span>Grid consumption</span><strong>{totalGridDraw.toFixed(1)} / {roomGridCapacity.toFixed(1)} kW</strong><small>{Math.round((totalGridDraw / roomGridCapacity) * 100)}% room load</small></div>
         <div><span>Estimated rewards</span><strong>{tokenFormat.format(projectedDailyMinegame)}</strong><small>MINEGAME per day · variable</small></div>
         <div><span>Machine health</span><strong>{averageCondition === null ? "—" : `${averageCondition}%`}</strong><small>{averageCondition === null ? "no miners installed" : repaired ? "maintenance complete" : "repair available"}</small></div>
         <div><span>Capacity</span><strong>{installedMiners.length} / {roomCapacity}</strong><small>{roomCapacity} open slots</small></div>

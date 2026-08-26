@@ -40,7 +40,7 @@ Copy the `digest` only from a report with `"pass": true`. Preserve the complete 
 
 Some B20 versions do not expose the two newer seizure policy scopes. For those two scopes only, the report may record `status: "unsupported"` when the token returns the exact canonical `UnsupportedPolicyType(bytes32)` error for the requested scope. The four transfer/mint scopes must remain supported at policy `0`, and the complete role-history check must still show no admin or seizure authority. Any other revert fails closed.
 
-Before deployment can compile as an authorized release, replace the deliberately zero `EXPECTED_B20_PREFLIGHT_DIGEST` constant in `DeployMineGameEconomy.s.sol` with that exact reviewed digest and commit the change. The deploy script requires exact equality. Any other value—including an arbitrary nonzero value—fails closed. Pinning the digest is a new review gate because it binds the release to one token report at one Base block.
+Before deployment can compile as an authorized release, `EXPECTED_B20_PREFLIGHT_DIGEST` in `DeployMineGameEconomy.s.sol` must equal the exact reviewed digest and the pinning commit must receive a second review. The deploy script requires exact equality. Any other value—including an arbitrary nonzero value—fails closed. Pinning the digest is a new review gate because it binds the release to one token report at one Base block.
 
 The B20 ABI does not enumerate role members. The Solidity deploy script therefore cannot independently discover every historical role holder; it requires the pinned offchain report digest and repeats every directly enumerable B20 check onchain. The report also asserts Base chain ID, compares deployment and current runtime bytecode, checks EIP-1967 implementation/admin/beacon slots, and cross-checks every address ever observed in relevant role events. Use an archive-capable RPC and preserve the JSON; the digest does not replace the evidence it binds.
 
@@ -67,3 +67,13 @@ The script deploys only the economy and asserts it is paused. It does not config
 5. Point the website at the verified economy and confirm it reads rooms, miners, tier prices, reserves, reward rate/runway, listings, and claimable balances.
 6. Simulate every Safe transaction and save the receipts.
 7. Treat `unpause()` as its own final authorization. Do not bundle it with deployment or configuration.
+
+After the deployed economy address is verified, generate the tier-only Safe Transaction Builder file:
+
+```bash
+npm run prepare:tiers -- \
+  --economy 0xDEPLOYED_ECONOMY \
+  --out /tmp/minegame-tier-configuration.json
+```
+
+The generator refuses the token and both Safe addresses as the economy target, encodes and decodes every call as a self-check, and creates exactly ten `configureTier` calls. It does not create funding, approval, reward-rate, or unpause transactions. The IPFS CARs must be published and both root CIDs fetched successfully before anyone signs this batch.
