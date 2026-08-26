@@ -214,7 +214,13 @@ export function MinerDashboard() {
       <footer className={styles.actionBar}>
         <div className={styles.yieldReadout}><span>Live economy</span><strong>{loading ? "Refreshing Base…" : paused ? "Configured · awaiting activation" : `+${tokenAmount(dailyShare)} MINEGAME/day estimated`}</strong></div>
         <button className={styles.claimButton} type="button" onClick={() => void claim()} disabled={!account || BigInt(player?.pendingRewards || 0) === BigInt(0) || busy}>Claim</button>
-        <button className={styles.repairButton} type="button" onClick={runMaintenance} disabled={repaired || ownedMiners.length === 0}>{ownedMiners.length === 0 ? "No miners to maintain" : repaired ? "Maintenance complete" : "Daily maintenance"}</button>
+        <button className={styles.repairButton} type="button" onClick={runMaintenance} disabled={repaired || ownedMiners.length === 0}>
+          <span className={styles.repairIcon} aria-hidden="true">⚡</span>
+          <span className={styles.repairCopy}>
+            <strong>{ownedMiners.length === 0 ? "Install a miner first" : repaired ? "Rig tuned for today" : "Tune the rig"}</strong>
+            <small>{ownedMiners.length === 0 ? "Maintenance locked" : repaired ? "Returns tomorrow" : "Daily maintenance ready"}</small>
+          </span>
+        </button>
         <button className={styles.marketButton} type="button" onClick={() => openMarket("primary")}>Miner market</button>
         <p className={styles.notice} aria-live="polite">{localNotice || notice}</p>
       </footer>

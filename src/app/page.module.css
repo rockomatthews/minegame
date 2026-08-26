@@ -11,6 +11,22 @@
 .resources span { color: #776a4e; font-size: .48rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
 .resources strong { margin-top: 2px; color: #f4d98f; font-size: .72rem; }
 .topActions { justify-self: end; display: flex; align-items: center; gap: 8px; }
+.profileControl { position: relative; }
+.profileButton { display: flex; min-height: 38px; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid rgb(0 191 243 / 40%); border-radius: 5px; color: #8fe7f8; background: linear-gradient(180deg, rgb(5 31 58 / 95%), rgb(2 14 31 / 96%)); cursor: pointer; font-size: .6rem; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+.profileButton > span:first-child { color: #7dff7a; font-size: .48rem; font-weight: 1000; text-shadow: 0 0 8px #7dff7a; }
+.profilePanel { position: absolute; z-index: 50; top: calc(100% + 12px); right: 0; display: grid; width: min(340px, calc(100vw - 24px)); gap: 10px; padding: 15px; border: 1px solid rgb(0 191 243 / 38%); border-radius: 10px; color: #dcecf2; background: linear-gradient(155deg, #0b2036, #050b14 62%); box-shadow: 0 18px 55px rgb(0 0 0 / 70%), 0 0 24px rgb(0 191 243 / 15%); }
+.profilePanelHeading { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+.profilePanelHeading > div { display: grid; gap: 3px; }
+.profilePanelHeading small, .profilePanel label { color: #6f91a3; font-size: .55rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.profilePanelHeading strong { color: #7dff7a; font-size: .75rem; overflow-wrap: anywhere; }
+.profilePanelHeading button { border: 0; color: #8ca1aa; background: transparent; cursor: pointer; font-size: 1.25rem; line-height: 1; }
+.profileEntry { display: flex; overflow: hidden; border: 1px solid rgb(0 191 243 / 28%); border-radius: 6px; background: #030a12; }
+.profileEntry input { min-width: 0; flex: 1; padding: 10px; border: 0; outline: 0; color: #e7faff; background: transparent; font-size: .75rem; font-weight: 800; }
+.profileEntry span { display: grid; place-items: center; padding: 0 10px; border-left: 1px solid rgb(0 191 243 / 18%); color: #6592a7; font-size: .68rem; }
+.profileSave { min-height: 38px; border: 1px solid #7dff7a; border-radius: 5px; color: #071108; background: linear-gradient(180deg, #a3ff8f, #5ddf68); cursor: pointer; font-size: .65rem; font-weight: 950; text-transform: uppercase; }
+.profileSave:disabled { cursor: wait; opacity: .55; }
+.profileMessage { color: #8cc8da; font-size: .65rem; line-height: 1.35; }
+.profileLinks { display: flex; justify-content: space-between; gap: 10px; color: #f6bd3b; font-size: .62rem; font-weight: 850; }
 .buyCoinButton { display: flex; min-height: 40px; align-items: center; gap: 8px; padding: 0 14px; border: 1px solid #f6bd3b; border-radius: 5px; color: #120d03; background: linear-gradient(180deg, #ffe58a, #e8a91f); box-shadow: 0 0 20px rgb(246 189 59 / 20%); font-size: .65rem; font-weight: 950; letter-spacing: .04em; text-transform: uppercase; }
 .buyCoinButton:hover { filter: brightness(1.08); }
 .buyCoinButton small { padding-left: 8px; border-left: 1px solid rgb(18 13 3 / 25%); font-size: .52rem; white-space: nowrap; }
@@ -44,6 +60,9 @@
 @media (max-width: 650px) {
   .topActions { gap: 5px; }
   .walletButton { min-height: 36px; max-width: 118px; overflow: hidden; padding-inline: 8px; font-size: .52rem; text-overflow: ellipsis; white-space: nowrap; }
+  .profileButton { width: 36px; min-height: 36px; justify-content: center; padding: 0; }
+  .profileButton > span:last-child { display: none; }
+  .profilePanel { position: fixed; top: 68px; right: 12px; left: 12px; width: auto; }
   .buyCoinLong { display: none; }
   .buyCoinShort { display: inline; }
 }

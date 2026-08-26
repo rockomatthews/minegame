@@ -6,6 +6,7 @@ import { formatUnits } from "viem";
 import coinLogo from "../../public/assets/minegame-logo.png";
 import { MINEGAME_BASE_APP_URL } from "@/lib/minegame";
 import { useMineGame } from "@/components/minegame-provider";
+import { ProfileControl } from "@/components/profile-control";
 import styles from "@/app/page.module.css";
 
 const compact = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2, notation: "compact" });
@@ -36,6 +37,7 @@ export function GameHeader() {
       </div>
 
       <div className={styles.topActions}>
+        <ProfileControl />
         <a className={styles.buyCoinButton} href={MINEGAME_BASE_APP_URL} target="_blank" rel="noreferrer">
           <span className={styles.buyCoinLong}>Buy MINEGAME</span>
           <span className={styles.buyCoinShort}>Buy coin</span>

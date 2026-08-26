@@ -46,8 +46,32 @@
 .claimButton, .repairButton, .marketButton { min-height: 38px; padding: 0 15px; border-radius: 4px; cursor: pointer; font-size: .67rem; font-weight: 900; text-transform: uppercase; }
 .claimButton { border: 1px solid rgb(246 189 59 / 34%); color: #f6bd3b; background: rgb(246 189 59 / 7%); }
 .claimButton:disabled { cursor: not-allowed; opacity: .45; }
-.repairButton { border: 1px solid rgb(147 227 106 / 38%); color: #d9f4c6; background: rgb(75 112 49 / 15%); }
-.repairButton:disabled { color: #7e8a72; cursor: default; opacity: .7; }
+.repairButton {
+  position: relative;
+  display: flex;
+  min-width: 228px;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 20px;
+  border: 2px solid #00bff3;
+  border-radius: 10px;
+  color: #7dff7a;
+  background: linear-gradient(155deg, #071d38, #031025 54%, #061a38);
+  box-shadow: 0 7px 0 #00121f, 0 0 22px rgb(0 191 243 / 42%), inset 0 1px 0 rgb(125 255 122 / 24%);
+  text-shadow: 0 0 9px rgb(125 255 122 / 72%);
+  transform: translateY(-3px);
+  transition: transform 130ms ease, box-shadow 130ms ease, filter 130ms ease;
+}
+.repairButton:not(:disabled):hover { filter: brightness(1.2); transform: translateY(-5px) scale(1.02); box-shadow: 0 9px 0 #00121f, 0 0 30px rgb(0 191 243 / 56%), 0 0 14px rgb(125 255 122 / 25%), inset 0 1px 0 rgb(125 255 122 / 34%); }
+.repairButton:not(:disabled):active { transform: translateY(4px); box-shadow: 0 1px 0 #00121f, 0 0 20px rgb(0 191 243 / 45%); }
+.repairButton:focus-visible { outline: 3px solid #7dff7a; outline-offset: 5px; }
+.repairButton:disabled { color: #7dff7a; cursor: default; filter: saturate(.72); opacity: .78; text-shadow: 0 0 7px rgb(125 255 122 / 40%); transform: none; box-shadow: 0 3px 0 #00121f, inset 0 1px 0 rgb(255 255 255 / 8%); }
+.repairIcon { font-size: 1.4rem; line-height: 1; filter: drop-shadow(0 0 7px #00bff3); }
+.repairCopy { display: grid; gap: 2px; text-align: left; }
+.repairCopy strong { font-size: .78rem; font-weight: 1000; letter-spacing: .08em; }
+.repairCopy small { color: #64d5e9; font-size: .55rem; font-weight: 800; letter-spacing: .05em; }
 .marketButton { border: 0; color: #171005; background: linear-gradient(135deg, #ffe696, #f6bd3b); }
 .notice { grid-column: 1 / -1; color: #7d7155; font-size: .54rem; line-height: 1.35; text-align: right; }
 .marketBackdrop { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 20px; background: rgb(0 0 0 / 75%); backdrop-filter: blur(8px); }
@@ -106,10 +130,10 @@
   .slots { grid-template-columns: repeat(5, 142px); }
   .minerCard, .emptySlot { min-height: 180px; }
   .emptySlot > span { width: 30px; height: 30px; margin-bottom: 6px; }
-  .actionBar { grid-template-columns: 1fr auto auto; padding: 8px 10px; }
+  .actionBar { grid-template-columns: 1fr 1fr; padding: 10px; }
   .yieldReadout, .notice { display: none; }
-  .repairButton { display: none; }
-  .marketButton { min-height: 34px; }
+  .repairButton { grid-column: 1 / -1; grid-row: 1; width: 100%; min-width: 0; min-height: 52px; }
+  .claimButton, .marketButton { width: 100%; min-height: 36px; }
   .marketGrid { grid-template-columns: 1fr; }
 }
 @media (max-height: 700px) and (min-width: 901px) {
