@@ -4,7 +4,7 @@ import https from "node:https";
 import path from "node:path";
 
 const PINATA_UPLOAD_URL = "https://api.pinata.cloud/pinning/pinFileToIPFS";
-const ORIGINAL_IMAGE_ROOT = "bafybeibuzymwyegy24yerjxbaz7j2sh7jr6yklg7vbn2r2lz6q323oytjm";
+const ORIGINAL_IMAGE_ROOT = "bafybeiafhkzyazlibvcp2s26j7f6dnxeu23yrlhfn5zvvb55dc53en5rwe";
 const imageDirectory = path.resolve("public/assets/miners");
 const metadataDirectory = path.resolve("metadata/miners");
 const dryRun = process.argv.includes("--dry-run");

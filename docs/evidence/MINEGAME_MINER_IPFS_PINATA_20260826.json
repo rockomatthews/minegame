@@ -1,0 +1,31 @@
+{
+  "recordedAt": "2026-08-26T03:45:11Z",
+  "provider": "Pinata public IPFS",
+  "imageRootCid": "bafybeiafhkzyazlibvcp2s26j7f6dnxeu23yrlhfn5zvvb55dc53en5rwe",
+  "metadataRootCid": "bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq",
+  "imagePathPrefix": "",
+  "metadataPathPrefix": "",
+  "imagePinSize": 23242821,
+  "metadataPinSize": 5578,
+  "verification": {
+    "localImagesCompared": 10,
+    "localMetadataCompared": 10,
+    "pinataGatewayByteMatches": 20,
+    "mismatches": 0,
+    "ownerSafeSimulation": {
+      "chainId": 8453,
+      "economy": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "from": "0x4114de71ccc0277e2fCe16909067F785cD742FDb",
+      "configureTierCalls": 10,
+      "passed": 10,
+      "failed": 0
+    }
+  },
+  "excludedActions": [
+    "Safe execution",
+    "reserve funding",
+    "token approval",
+    "reward-rate activation",
+    "unpause"
+  ]
+}

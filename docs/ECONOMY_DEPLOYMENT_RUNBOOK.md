@@ -76,4 +76,4 @@ npm run prepare:tiers -- \
   --out /tmp/minegame-tier-configuration.json
 ```
 
-The generator refuses the token and both Safe addresses as the economy target, encodes and decodes every call as a self-check, and creates exactly ten `configureTier` calls. It does not create funding, approval, reward-rate, or unpause transactions. The IPFS CARs must be published and both root CIDs fetched successfully before anyone signs this batch.
+The generator refuses the token and both Safe addresses as the economy target, encodes and decodes every call as a self-check, and creates exactly ten `configureTier` calls. It does not create funding, approval, reward-rate, or unpause transactions. The reviewed image and metadata directories must be published to IPFS, and both root CIDs must be fetched successfully before anyone signs this batch.

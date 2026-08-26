@@ -12,7 +12,7 @@ const CHAIN_ID = "8453";
 const OWNER_SAFE = "0x4114de71ccc0277e2fCe16909067F785cD742FDb";
 const TREASURY_SAFE = "0xD9A7b8DB19C9A4012a78bBa7CA3555C4e75f14e1";
 const TOKEN = "0xB20000000000000000000033307E6D1bB78b0201";
-const METADATA_ROOT = "bafybeidljqupjhirckmq4bwapdakhkeoxemp7ttfy73sdpaxwte2wc42wy";
+const METADATA_ROOT = "bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq";
 
 const configureTierAbi = [{
   type: "function",
