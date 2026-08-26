@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "chainId": "8453",
+  "createdAt": 1787722141000,
+  "meta": {
+    "name": "MineGame final authorized unpause",
+    "description": "One unpause call only. No transfer, funding, approval, tier change, or reward-rate change.",
+    "txBuilderVersion": "1.18.0",
+    "createdFromSafeAddress": "0x4114de71ccc0277e2fCe16909067F785cD742FDb",
+    "createdFromOwnerAddress": ""
+  },
+  "transactions": [
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x3f4ba83a",
+      "contractMethod": {
+        "type": "function",
+        "name": "unpause",
+        "stateMutability": "nonpayable",
+        "inputs": [],
+        "outputs": []
+      },
+      "contractInputsValues": {}
+    }
+  ]
+}

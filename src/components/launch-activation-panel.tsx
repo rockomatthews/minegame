@@ -7,6 +7,7 @@ import styles from "@/app/secondary.module.css";
 const AUTHORIZED_FUNDER = "0x8A0182c099A618583e9EF98716DAcF739b3BD944";
 const FUNDING_AMOUNT = parseUnits("100000", 18);
 const RATE_BATCH = "/safe/MINEGAME_REWARD_RATE_0_00025_BASE.json";
+const UNPAUSE_BATCH = "/safe/MINEGAME_FINAL_UNPAUSE_BASE.json";
 
 function amount(raw?: string) {
   if (!raw) return "0";
@@ -36,8 +37,9 @@ export function LaunchActivationPanel() {
       <div className={styles.activationActions}>
         {!account ? <button type="button" onClick={() => void connect()}>Connect funding wallet</button> : !isFunder ? <button type="button" disabled>Connect approved wallet</button> : funded ? <button type="button" disabled>100K funding confirmed</button> : !hasBalance ? <button type="button" disabled>Insufficient MINEGAME</button> : !hasAllowance ? <button type="button" onClick={() => void approve(FUNDING_AMOUNT)} disabled={Boolean(pendingAction)}>1. Approve exactly 100K</button> : <button type="button" onClick={() => void fundRewards(FUNDING_AMOUNT)} disabled={Boolean(pendingAction)}>2. Fund exactly 100K</button>}
         {rateSet ? <button type="button" disabled>Rate confirmed on Base</button> : <a href={RATE_BATCH} download>3. Download Owner Safe rate file</a>}
+        {funded && rateSet && game?.paused ? <a href={UNPAUSE_BATCH} download>Final: Download unpause file</a> : null}
       </div>
-      <p className={styles.activationNotice} aria-live="polite">{notice} This panel cannot unpause the economy. The rate file contains one setRewardRate call and no other transaction.</p>
+      <p className={styles.activationNotice} aria-live="polite">{notice} The final file contains one Owner Safe unpause call and no other transaction. Importing it does not execute it; the Safe still requires its normal confirmations.</p>
     </section>
   );
 }
