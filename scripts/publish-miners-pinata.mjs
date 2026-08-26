@@ -1,4 +1,6 @@
 import { readFile, readdir } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import https from "node:https";
 import path from "node:path";
 
 const PINATA_UPLOAD_URL = "https://api.pinata.cloud/pinning/pinFileToIPFS";
@@ -12,21 +14,55 @@ async function filesIn(directory, extension) {
   return Promise.all(names.map(async (name) => ({ name, bytes: await readFile(path.join(directory, name)) })));
 }
 
-async function uploadFolder(files, pinName, jwt) {
-  const form = new FormData();
-  for (const file of files) {
-    form.append("file", new File([file.bytes], file.name), file.name);
-  }
-  form.append("pinataMetadata", JSON.stringify({ name: pinName }));
-  form.append("pinataOptions", JSON.stringify({ cidVersion: 1 }));
+function buildFolderBody(files, folderName, pinName) {
+  const boundary = `minegame-${randomUUID()}`;
+  const chunks = [];
+  const addText = (name, value) => {
+    chunks.push(Buffer.from(
+      `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`,
+    ));
+  };
 
-  const response = await fetch(PINATA_UPLOAD_URL, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${jwt}` },
-    body: form,
+  for (const file of files) {
+    const filename = `${folderName}/${file.name}`;
+    chunks.push(Buffer.from(
+      `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: application/octet-stream\r\n\r\n`,
+    ));
+    chunks.push(file.bytes, Buffer.from("\r\n"));
+  }
+  addText("pinataMetadata", JSON.stringify({ name: pinName }));
+  addText("pinataOptions", JSON.stringify({ cidVersion: 1 }));
+  chunks.push(Buffer.from(`--${boundary}--\r\n`));
+
+  return {
+    body: Buffer.concat(chunks),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
+}
+
+async function uploadFolder(files, folderName, pinName, jwt) {
+  const { body: requestBody, contentType } = buildFolderBody(files, folderName, pinName);
+  const { status, body } = await new Promise((resolve, reject) => {
+    const request = https.request(PINATA_UPLOAD_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        "Content-Type": contentType,
+        "Content-Length": requestBody.length,
+      },
+    }, (response) => {
+      const chunks = [];
+      response.on("data", (chunk) => chunks.push(chunk));
+      response.on("end", () => resolve({
+        status: response.statusCode ?? 0,
+        body: Buffer.concat(chunks).toString("utf8"),
+      }));
+    });
+    request.setTimeout(120_000, () => request.destroy(new Error(`Pinata ${pinName} upload timed out.`)));
+    request.on("error", reject);
+    request.end(requestBody);
   });
-  const body = await response.text();
-  if (!response.ok) throw new Error(`Pinata ${pinName} upload failed (${response.status}): ${body}`);
+  if (status < 200 || status >= 300) throw new Error(`Pinata ${pinName} upload failed (${status}): ${body}`);
 
   const parsed = JSON.parse(body);
   if (typeof parsed.IpfsHash !== "string" || !parsed.IpfsHash.startsWith("bafy")) {
@@ -35,14 +71,23 @@ async function uploadFolder(files, pinName, jwt) {
   return parsed;
 }
 
-async function verifyGateway(cid, filename) {
-  const url = `https://gateway.pinata.cloud/ipfs/${cid}/${filename}`;
+async function findGatewayPath(cid, filename, folderName) {
+  const candidates = [filename, `${folderName}/${filename}`];
   for (let attempt = 1; attempt <= 10; attempt += 1) {
-    const response = await fetch(url, { redirect: "follow" });
-    if (response.ok) return { url, status: response.status };
+    for (const candidate of candidates) {
+      const url = `https://gateway.pinata.cloud/ipfs/${cid}/${candidate}`;
+      const response = await fetch(url, { redirect: "follow" });
+      if (response.ok) {
+        return {
+          pathPrefix: candidate.slice(0, -filename.length),
+          url,
+          status: response.status,
+        };
+      }
+    }
     if (attempt < 10) await new Promise((resolve) => setTimeout(resolve, 3_000));
   }
-  throw new Error(`Pinned content was not retrievable: ${url}`);
+  throw new Error(`Pinned content was not retrievable for ${cid}/${filename}.`);
 }
 
 const images = await filesIn(imageDirectory, ".png");
@@ -59,32 +104,45 @@ for (const file of sourceMetadata) {
 }
 
 if (dryRun) {
-  console.log(JSON.stringify({ ready: true, images: images.length, metadata: sourceMetadata.length }, null, 2));
+  const multipart = buildFolderBody(images, "miners", "MineGame miner images").body.toString("latin1");
+  const filepathParts = multipart.match(/filename="miners\/[^"]+"/g) ?? [];
+  console.log(JSON.stringify({
+    ready: filepathParts.length === images.length,
+    images: images.length,
+    metadata: sourceMetadata.length,
+    multipartFilepathParts: filepathParts.length,
+  }, null, 2));
+  if (filepathParts.length !== images.length) process.exit(1);
   process.exit(0);
 }
 
 const jwt = process.env.PINATA_JWT;
 if (!jwt) throw new Error("Set PINATA_JWT in the current shell. Do not commit it or paste it into chat.");
 
-const imageUpload = await uploadFolder(images, "MineGame miner images", jwt);
+const imageUpload = await uploadFolder(images, "miners", "MineGame miner images", jwt);
+const imagePath = await findGatewayPath(imageUpload.IpfsHash, images[0].name, "miners");
 const metadata = sourceMetadata.map((file) => ({
   name: file.name,
-  bytes: Buffer.from(file.bytes.toString("utf8").replaceAll(ORIGINAL_IMAGE_ROOT, imageUpload.IpfsHash)),
+  bytes: Buffer.from(file.bytes.toString("utf8").replaceAll(
+    `ipfs://${ORIGINAL_IMAGE_ROOT}/`,
+    `ipfs://${imageUpload.IpfsHash}/${imagePath.pathPrefix}`,
+  )),
 }));
-const metadataUpload = await uploadFolder(metadata, "MineGame miner metadata", jwt);
+const metadataUpload = await uploadFolder(metadata, "metadata", "MineGame miner metadata", jwt);
+const metadataPath = await findGatewayPath(metadataUpload.IpfsHash, metadata[0].name, "metadata");
 
-const [firstImage, lastImage, firstMetadata, lastMetadata] = await Promise.all([
-  verifyGateway(imageUpload.IpfsHash, images[0].name),
-  verifyGateway(imageUpload.IpfsHash, images.at(-1).name),
-  verifyGateway(metadataUpload.IpfsHash, metadata[0].name),
-  verifyGateway(metadataUpload.IpfsHash, metadata.at(-1).name),
+const [lastImage, lastMetadata] = await Promise.all([
+  findGatewayPath(imageUpload.IpfsHash, images.at(-1).name, "miners"),
+  findGatewayPath(metadataUpload.IpfsHash, metadata.at(-1).name, "metadata"),
 ]);
 
 console.log(JSON.stringify({
   pass: true,
   imageRootCid: imageUpload.IpfsHash,
+  imagePathPrefix: imagePath.pathPrefix,
   metadataRootCid: metadataUpload.IpfsHash,
+  metadataPathPrefix: metadataPath.pathPrefix,
   imagePinSize: imageUpload.PinSize,
   metadataPinSize: metadataUpload.PinSize,
-  gatewayChecks: [firstImage, lastImage, firstMetadata, lastMetadata],
+  gatewayChecks: [imagePath, lastImage, metadataPath, lastMetadata],
 }, null, 2));
