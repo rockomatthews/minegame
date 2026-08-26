@@ -1,0 +1,584 @@
+{
+  "version": "1.0",
+  "chainId": "8453",
+  "createdAt": 1787716270125,
+  "meta": {
+    "name": "MineGame reviewed miner tier configuration",
+    "description": "Ten configureTier calls only. No funding, approval, reward-rate change, or unpause.",
+    "txBuilderVersion": "1.18.0",
+    "createdFromSafeAddress": "0x4114de71ccc0277e2fCe16909067F785cD742FDb",
+    "createdFromOwnerAddress": ""
+  },
+  "transactions": [
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e17000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000003635c9adc5dea000000000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000009c400000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000057697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30312d74696e2d70616e2e6a736f6e000000000000000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "1",
+        "price": "1000000000000000000000",
+        "baseHashrate": "100",
+        "gridDraw": "6",
+        "buybackBps": "2500",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-01-tin-pan.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e1700000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000878678326eac900000000000000000000000000000000000000000000000000000000000000000008700000000000000000000000000000000000000000000000000000000000000090000000000000000000000000000000000000000000000000000000000000abe00000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000005a697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30322d726174746c65747261702e6a736f6e000000000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "2",
+        "price": "2500000000000000000000",
+        "baseHashrate": "135",
+        "gridDraw": "9",
+        "buybackBps": "2750",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-02-rattletrap.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e1700000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000001969368974c05b0000000000000000000000000000000000000000000000000000000000000000000b4000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000bb800000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000057697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30332d6d6f6c65626f782e6a736f6e000000000000000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "3",
+        "price": "7500000000000000000000",
+        "baseHashrate": "180",
+        "gridDraw": "14",
+        "buybackBps": "3000",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-03-molebox.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e17000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000043c33c193756480000000000000000000000000000000000000000000000000000000000000000000fa00000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000000000000000000000000000000cb200000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000005d697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30342d626f696c65722d6261646765722e6a736f6e000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "4",
+        "price": "20000000000000000000000",
+        "baseHashrate": "250",
+        "gridDraw": "22",
+        "buybackBps": "3250",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-04-boiler-badger.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e170000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000a968163f0a57b400000000000000000000000000000000000000000000000000000000000000000015e00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000dac00000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000057697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30352d676f6c646a61772e6a736f6e000000000000000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "5",
+        "price": "50000000000000000000000",
+        "baseHashrate": "350",
+        "gridDraw": "32",
+        "buybackBps": "3500",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-05-goldjaw.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e170000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000001a784379d99db420000000000000000000000000000000000000000000000000000000000000000001f400000000000000000000000000000000000000000000000000000000000000320000000000000000000000000000000000000000000000000000000000000ea600000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000061697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30362d646565702d636f72652d627275697365722e6a736f6e00000000000000000000000000000000000000000000000000000000000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "6",
+        "price": "125000000000000000000000",
+        "baseHashrate": "500",
+        "gridDraw": "50",
+        "buybackBps": "3750",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-06-deep-core-bruiser.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e170000000000000000000000000000000000000000000000000000000000000007000000000000000000000000000000000000000000003f870857a3e0e380000000000000000000000000000000000000000000000000000000000000000002bc000000000000000000000000000000000000000000000000000000000000004b0000000000000000000000000000000000000000000000000000000000000fa000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000005a697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30372d6172632d63616e6172792e6a736f6e000000000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "7",
+        "price": "300000000000000000000000",
+        "baseHashrate": "700",
+        "gridDraw": "75",
+        "buybackBps": "4000",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-07-arc-canary.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e1700000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000089a4921338674240000000000000000000000000000000000000000000000000000000000000000003e8000000000000000000000000000000000000000000000000000000000000006e000000000000000000000000000000000000000000000000000000000000109a00000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000005c697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30382d7175616e74756d2d6a61636b2e6a736f6e00000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "8",
+        "price": "650000000000000000000000",
+        "baseHashrate": "1000",
+        "gridDraw": "110",
+        "buybackBps": "4250",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-08-quantum-jack.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e1700000000000000000000000000000000000000000000000000000000000000090000000000000000000000000000000000000000000108b2a2c280290940000000000000000000000000000000000000000000000000000000000000000005dc00000000000000000000000000000000000000000000000000000000000000b4000000000000000000000000000000000000000000000000000000000000119400000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000005d697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d30392d6e6f76612d627572726f7765722e6a736f6e000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "9",
+        "price": "1250000000000000000000000",
+        "baseHashrate": "1500",
+        "gridDraw": "180",
+        "buybackBps": "4500",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-09-nova-burrower.json"
+      }
+    },
+    {
+      "to": "0x3a0d0C4feaE4eaB9275fDc13068C083deE7c8131",
+      "value": "0",
+      "data": "0x95cb9e17000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000002116545850052128000000000000000000000000000000000000000000000000000000000000000000960000000000000000000000000000000000000000000000000000000000000012c000000000000000000000000000000000000000000000000000000000000138800000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000005a697066733a2f2f62616679626569666f676f69796d356e6f36696c6f6d736336656f70757175766566643676726e71627668647361667165357076336178636f67712f746965722d31302d6b696e672d6d696461732e6a736f6e000000000000",
+      "contractMethod": {
+        "type": "function",
+        "name": "configureTier",
+        "stateMutability": "nonpayable",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "baseHashrate",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "gridDraw",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint16",
+            "name": "buybackBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "configuredTierId",
+            "type": "uint256"
+          }
+        ]
+      },
+      "contractInputsValues": {
+        "tierId": "10",
+        "price": "2500000000000000000000000",
+        "baseHashrate": "2400",
+        "gridDraw": "300",
+        "buybackBps": "5000",
+        "metadataURI": "ipfs://bafybeifogoiym5no6ilomsc6eopuquvefd6vrnqbvhdsafqe5pv3axcogq/tier-10-king-midas.json"
+      }
+    }
+  ]
+}
